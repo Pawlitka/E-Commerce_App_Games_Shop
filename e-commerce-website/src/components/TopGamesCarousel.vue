@@ -40,7 +40,6 @@ export default {
 
     if(autoPlayEnabled.value) {
       autoPlay();
-
     }
 
     return {
@@ -58,18 +57,18 @@ export default {
 
 <template>
   <div class="carousel">
-    <div class="content">
+    <div class="carousel__content content">
       <template v-if="navigationEnabled">
-        <div class="content__arrow-box" @click="prevSlide">
-          <img class="arrow-img" :src="require(`../assets/Carousel/arrow_white.png`)" alt=""/>
+        <div class="content__arrow-box content__arrow-box--left" @click="prevSlide">
+          <img class="arrow-img" :src="require(`@/assets/Carousel/arrow_white.png`)" alt="Previous slide arrow icon"/>
         </div>
       </template>
-        <div class="slides">
+        <div class="content__slides slides">
           <template v-for="(subSlides, index) in carouselSlides" :key="index">
             <template v-if="currentSubSlidesIndex === index">
               <template v-for="slide in subSlides" :key="slide">
                 <div class="slides__slide slide">
-                  <img class="slide__image" :src="require(`../assets/${slide}`)" alt="">
+                  <img class="slide__image" :src="require(`@/assets/${slide}`)" alt="">
                 </div>
               </template>
             </template>
@@ -77,7 +76,7 @@ export default {
         </div>
       <template v-if="navigationEnabled">
         <div class="content__arrow-box content__arrow-box--right" @click="nextSlide">
-          <img class="arrow-img" :src="require(`../assets/Carousel/arrow_white.png`)" alt=""/>
+          <img class="arrow-img" :src="require(`@/assets/Carousel/arrow_white.png`)" alt="Next slide arrow icon"/>
         </div>
       </template>
     </div>
@@ -97,16 +96,18 @@ export default {
 .carousel {
   display: flex;
   flex-direction: column;
-  margin-top: 6%;
 
   &__pagination {
     width: 100%;
   }
+
+  &__content {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .content {
-  width: 100%;
-  height: 100%;
   display: flex;
   align-items: center;
 
@@ -118,11 +119,15 @@ export default {
     height: 75px;
     border-radius: 50%;
     background-color: #0073E5;
-    margin: 50px;
     cursor: pointer;
 
     &--right {
       transform: scaleX(-1);
+      margin: 50px 0 50px 50px;
+    }
+
+    &--left {
+      margin: 50px 50px 50px 0;
     }
   }
 }
@@ -135,13 +140,18 @@ export default {
   gap: 45px;
 }
 
-.slides-background {
-  margin: 165px;
-  width: 800px;
-  height: 340px;
+.slides::before {
+  content: '';
+  position: absolute;
+  display: block;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+  margin: -2%;
   filter: blur(20px);
   background-color: rgba(194, 215, 236, 0.75);
-  position: absolute;
 }
 
 .slide {
