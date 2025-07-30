@@ -1,72 +1,13 @@
 <template>
   <div class="home">
-    <TopGamesCarousel
-        :navigation="true"
-        :pagination="true"
-        :startAutoPlay="false"
-        :timeout="5000"
-        :carouselSlides="carouselSlides"
-    />
   </div>
 </template>
 
 <script>
-import TopGamesCarousel from "@/components/TopGamesCarousel.vue";
+// @ is an alias to /src
 
 export default {
   name: 'HomeView',
-  components: {TopGamesCarousel},
-
-  setup() {
-    // const carouselSlides = [
-    //     ['Cyberpunk2077.jpg','TombRaider.jpg','Witcher_3.jpg'],
-    //     ['Cyberpunk2077.jpg','Cyberpunk2077.jpg','Cyberpunk2077.jpg'],
-    //     ['TombRaider.jpg','TombRaider.jpg'],
-    //     ['Witcher_3.jpg','Witcher_3.jpg']
-    // ];
-
-    const carouselSlides = [
-      [
-        {
-          imagePath: 'Cyberpunk2077.jpg',
-          alternativeText: 'Image of game Cyberpunk 2077.',
-        },
-        {
-          imagePath: 'TombRaider.jpg',
-          alternativeText: 'Image of game Tomb Raider.'
-        },
-        {
-          imagePath: 'Witcher_3.jpg',
-          alternativeText: 'Image of game Witcher 3.'
-        }
-      ],
-      [
-        {
-          imagePath: 'TombRaider.jpg',
-          alternativeText: 'Image of game Tomb Raider.'
-        },
-        {
-          imagePath: 'Witcher_3.jpg',
-          alternativeText: 'Image of game Witcher 3.'
-        },
-        {
-          imagePath: 'Cyberpunk2077.jpg',
-          alternativeText: 'Image of game Cyberpunk 2077.'
-        }
-      ],
-
-    ];
-    return { carouselSlides };
-  }
+  components: {}
 }
 </script>
-
-<style lang="scss" scoped>
-
-.home {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-</style>
