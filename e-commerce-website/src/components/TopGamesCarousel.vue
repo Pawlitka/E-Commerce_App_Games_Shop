@@ -66,9 +66,9 @@ export default {
         <div class="content__slides slides">
           <template v-for="(subSlides, index) in carouselSlides" :key="index">
             <template v-if="currentSubSlidesIndex === index">
-              <template v-for="slide in subSlides" :key="slide">
+              <template v-for="slide in subSlides" :key="slide.imagePath">
                 <div class="slides__slide slide">
-                  <img class="slide__image" :src="require(`@/assets/${slide}`)" alt="">
+                  <img class="slide__image" :src="require(`@/assets/${slide.imagePath}`)" :alt="slide.alternativeText">
                 </div>
               </template>
             </template>
