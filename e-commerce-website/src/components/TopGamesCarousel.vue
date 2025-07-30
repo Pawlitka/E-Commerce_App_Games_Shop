@@ -3,12 +3,12 @@ import { ref } from "vue";
 export default {
   props: ["startAutoPlay", "timeout", "navigation", "pagination", "carouselSlides"],
   setup(props) {
-    const carouselSlidesRef = ref(props.carouselSlides ? [] : props.carouselSlides);
+    const carouselSlidesRef = ref(props.carouselSlides ? props.carouselSlides : []);
     const currentSubSlidesIndex = ref(0);
-    const autoPlayEnabled = ref(props.startAutoPlay  ? true : props.startAutoPlay);
-    const timeOutDuration = ref(props.timeout  ? 5000 : props.timeout);
-    const paginationEnabled = ref(props.pagination  ? true : props.pagination);
-    const navigationEnabled = ref(props.navigation  ? true : props.navigation);
+    const autoPlayEnabled = ref(!!props.startAutoPlay);
+    const timeOutDuration = ref(props.timeout ? props.timeout : 5000);
+    const paginationEnabled = ref(!!props.pagination);
+    const navigationEnabled = ref(!!props.navigation);
 
     function nextSlides() {
       const isLastSlide = currentSubSlidesIndex.value === carouselSlidesRef.value.length - 1;
@@ -64,8 +64,6 @@ export default {
           <img class="arrow-img" :src="require(`../assets/Carousel/arrow_white.png`)" alt=""/>
         </div>
       </template>
-        <div class="slides-background">
-        </div>
         <div class="slides">
           <template v-for="(subSlides, index) in carouselSlides" :key="index">
             <template v-if="currentSubSlidesIndex === index">
