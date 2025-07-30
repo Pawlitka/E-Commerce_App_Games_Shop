@@ -62,17 +62,19 @@ export default {
           <img class="arrow-img" :src="require(`../assets/Carousel/arrow_white.png`)" alt=""/>
         </div>
       </template>
-      <div class="slides">
-        <template v-for="(subSlides, index) in carouselSlides" :key="index">
-          <template v-if="currentSubSlidesIndex === index">
-            <template v-for="slide in subSlides" :key="slide">
-              <div class="slides__slide slide">
-                <img class="slide__image" :src="require(`../assets/${slide}`)" alt="">
-              </div>
+        <div class="slides-background">
+        </div>
+        <div class="slides">
+          <template v-for="(subSlides, index) in carouselSlides" :key="index">
+            <template v-if="currentSubSlidesIndex === index">
+              <template v-for="slide in subSlides" :key="slide">
+                <div class="slides__slide slide">
+                  <img class="slide__image" :src="require(`../assets/${slide}`)" alt="">
+                </div>
+              </template>
             </template>
           </template>
-        </template>
-      </div>
+        </div>
       <template v-if="navigationEnabled">
         <div class="content__arrow-box content__arrow-box--right" @click="nextSlide">
           <img class="arrow-img" :src="require(`../assets/Carousel/arrow_white.png`)" alt=""/>
@@ -95,6 +97,7 @@ export default {
 .carousel {
   display: flex;
   flex-direction: column;
+  margin-top: 6%;
 
   &__pagination {
     width: 100%;
@@ -102,6 +105,8 @@ export default {
 }
 
 .content {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
 
@@ -123,10 +128,20 @@ export default {
 }
 
 .slides {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 45px;
+}
+
+.slides-background {
+  margin: 165px;
+  width: 800px;
+  height: 340px;
+  filter: blur(20px);
+  background-color: rgba(194, 215, 236, 0.75);
+  position: absolute;
 }
 
 .slide {
