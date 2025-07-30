@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import TopGamesCarousel from "../components/TopGamesCarousel.vue";
+import TopGamesCarousel from "@/components/TopGamesCarousel.vue";
 
 export default {
   name: 'HomeView',
