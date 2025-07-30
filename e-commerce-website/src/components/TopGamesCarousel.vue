@@ -10,7 +10,7 @@ export default {
     const paginationEnabled = ref(!!props.pagination);
     const navigationEnabled = ref(!!props.navigation);
 
-    function nextSlides() {
+    function nextSlide() {
       const isLastSlide = currentSubSlidesIndex.value === carouselSlidesRef.value.length - 1;
       if(isLastSlide) {
         currentSubSlidesIndex.value = 0;
@@ -19,7 +19,7 @@ export default {
       }
     }
 
-    function prevSlides() {
+    function prevSlide() {
       const isFirstSlide = currentSubSlidesIndex.value === 0;
       if(isFirstSlide) {
         currentSubSlidesIndex.value = carouselSlidesRef.value.length - 1;
@@ -28,13 +28,13 @@ export default {
       }
     }
 
-    function goToSlides(index) {
+    function goToSlide(index) {
       currentSubSlidesIndex.value = index;
     }
 
     function autoPlay() {
       setInterval(() => {
-        nextSlides();
+        nextSlide();
       }, timeOutDuration.value);
     }
 
@@ -45,10 +45,10 @@ export default {
 
     return {
       carouselSlidesRef,
-      currentSubSlidesIndex: currentSubSlidesIndex,
-      nextSlide: nextSlides,
-      prevSlide: prevSlides,
-      goToSlide: goToSlides,
+      currentSubSlidesIndex,
+      nextSlide,
+      prevSlide,
+      goToSlide,
       paginationEnabled,
       navigationEnabled
     };
