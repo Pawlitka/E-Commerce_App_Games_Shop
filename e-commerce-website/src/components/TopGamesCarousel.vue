@@ -3,27 +3,29 @@ import { ref } from "vue";
 export default {
   props: ["startAutoPlay", "timeout", "navigation", "pagination", "carouselSlides"],
   setup(props) {
-    const carouselSlidesRef = ref(props.carouselSlides === undefined ? [] : props.carouselSlides);
+    const carouselSlidesRef = ref(props.carouselSlides ? [] : props.carouselSlides);
     const currentSubSlidesIndex = ref(0);
-    const autoPlayEnabled = ref(props.startAutoPlay === undefined ? true : props.startAutoPlay);
-    const timeOutDuration = ref(props.timeout === undefined ? 5000 : props.timeout);
-    const paginationEnabled = ref(props.pagination === undefined ? true : props.pagination);
-    const navigationEnabled = ref(props.navigation === undefined ? true : props.navigation);
+    const autoPlayEnabled = ref(props.startAutoPlay  ? true : props.startAutoPlay);
+    const timeOutDuration = ref(props.timeout  ? 5000 : props.timeout);
+    const paginationEnabled = ref(props.pagination  ? true : props.pagination);
+    const navigationEnabled = ref(props.navigation  ? true : props.navigation);
 
     function nextSlides() {
-      if(currentSubSlidesIndex.value === carouselSlidesRef.value.length - 1) {
+      const isLastSlide = currentSubSlidesIndex.value === carouselSlidesRef.value.length - 1;
+      if(isLastSlide) {
         currentSubSlidesIndex.value = 0;
-        return;
+      } else {
+        currentSubSlidesIndex.value += 1;
       }
-      currentSubSlidesIndex.value += 1;
     }
 
     function prevSlides() {
-      if(currentSubSlidesIndex.value === 0) {
+      const isFirstSlide = currentSubSlidesIndex.value === 0;
+      if(isFirstSlide) {
         currentSubSlidesIndex.value = carouselSlidesRef.value.length - 1;
-        return;
+      } else {
+        currentSubSlidesIndex.value -= 1;
       }
-      currentSubSlidesIndex.value -= 1;
     }
 
     function goToSlides(index) {
