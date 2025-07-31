@@ -1,64 +1,72 @@
-<script>
-import { ref } from "vue";
-export default {
-  props: ["startAutoPlay", "timeout", "navigation", "pagination", "carouselSlides"],
-  setup(props) {
-    const carouselSlidesRef = ref(props.carouselSlides ? props.carouselSlides : []);
-    const currentSubSlidesIndex = ref(0);
-    const autoPlayEnabled = ref(!!props.startAutoPlay);
-    const timeOutDuration = ref(props.timeout ? props.timeout : 5000);
-    const paginationEnabled = ref(!!props.pagination);
-    const navigationEnabled = ref(!!props.navigation);
+<script setup>
+import {onMounted, defineProps, ref} from "vue";
 
-    function nextSlide() {
-      const isLastSlide = currentSubSlidesIndex.value === carouselSlidesRef.value.length - 1;
-      if(isLastSlide) {
-        currentSubSlidesIndex.value = 0;
-      } else {
-        currentSubSlidesIndex.value += 1;
-      }
-    }
+const props = defineProps({
+  startAutoPlay: {
+    type: Boolean,
+    default: false
+  },
+  timeout: {
+    type: Number,
+    default: 5000
+  },
+  navigation: {
+    type: Boolean,
+    default: true
+  },
+  pagination: {
+    type: Boolean,
+    default: true
+  },
+  carouselSlides: {
+    type: Array,
+    default: () => [],
+    required: true
+  },
+});
 
-    function prevSlide() {
-      const isFirstSlide = currentSubSlidesIndex.value === 0;
-      if(isFirstSlide) {
-        currentSubSlidesIndex.value = carouselSlidesRef.value.length - 1;
-      } else {
-        currentSubSlidesIndex.value -= 1;
-      }
-    }
+const currentSubSlidesIndex = ref(0);
 
-    function goToSlide(index) {
-      currentSubSlidesIndex.value = index;
-    }
-
-    function autoPlay() {
-      setInterval(() => {
-        nextSlide();
-      }, timeOutDuration.value);
-    }
-
-    if(autoPlayEnabled.value) {
-      autoPlay();
-    }
-
-    return {
-      carouselSlidesRef,
-      currentSubSlidesIndex,
-      nextSlide,
-      prevSlide,
-      goToSlide,
-      paginationEnabled,
-      navigationEnabled
-    };
+function nextSlide() {
+  const isLastSlide = currentSubSlidesIndex.value === props.carouselSlides.length - 1;
+  if(isLastSlide) {
+    currentSubSlidesIndex.value = 0;
+  } else {
+    currentSubSlidesIndex.value += 1;
   }
 }
+
+function prevSlide() {
+  const isFirstSlide = currentSubSlidesIndex.value === 0;
+  if(isFirstSlide) {
+    currentSubSlidesIndex.value = props.carouselSlides.length - 1;
+  } else {
+    currentSubSlidesIndex.value -= 1;
+  }
+}
+
+function goToSlide(index) {
+  currentSubSlidesIndex.value = index;
+}
+
+function autoPlay() {
+  setInterval(() => {
+    nextSlide();
+  }, props.timeout);
+}
+
+onMounted(() => {
+  if(props.startAutoPlay) {
+    autoPlay();
+  }
+})
+
 </script>
 
 <template>
   <div class="carousel">
     <div class="carousel__content content">
-      <template v-if="navigationEnabled">
+      <template v-if="navigation">
         <div class="content__arrow-box content__arrow-box--left" @click="prevSlide">
           <img class="arrow-img" :src="require(`@/assets/Carousel/arrow_white.png`)" alt="Previous slide arrow icon"/>
         </div>
@@ -74,13 +82,13 @@ export default {
             </template>
           </template>
         </div>
-      <template v-if="navigationEnabled">
+      <template v-if="navigation">
         <div class="content__arrow-box content__arrow-box--right" @click="nextSlide">
           <img class="arrow-img" :src="require(`@/assets/Carousel/arrow_white.png`)" alt="Next slide arrow icon"/>
         </div>
       </template>
     </div>
-    <div v-if="paginationEnabled" class="carousel__pagination pagination">
+    <div v-if="pagination" class="carousel__pagination pagination">
         <span class="pagination__dot"
             @click="goToSlide(index)"
             v-for="(slide, index) in carouselSlides.length"
