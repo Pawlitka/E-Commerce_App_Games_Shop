@@ -2,23 +2,23 @@
 import {onMounted, defineProps, ref} from "vue";
 
 const props = defineProps({
-  startAutoPlay: {
+  shouldStartAutoPlay: {
     type: Boolean,
     default: false
   },
-  timeout: {
+  timeoutInMilliseconds: {
     type: Number,
     default: 5000
   },
-  navigation: {
+  showNavigation: {
     type: Boolean,
     default: true
   },
-  pagination: {
+  showPagination: {
     type: Boolean,
     default: true
   },
-  carouselSlides: {
+  slides: {
     type: Array,
     default: () => [],
     required: true
@@ -28,7 +28,7 @@ const props = defineProps({
 const currentSubSlidesIndex = ref(0);
 
 function nextSlide() {
-  const isLastSlide = currentSubSlidesIndex.value === props.carouselSlides.length - 1;
+  const isLastSlide = currentSubSlidesIndex.value === props.slides.length - 1;
   if(isLastSlide) {
     currentSubSlidesIndex.value = 0;
   } else {
@@ -39,7 +39,7 @@ function nextSlide() {
 function prevSlide() {
   const isFirstSlide = currentSubSlidesIndex.value === 0;
   if(isFirstSlide) {
-    currentSubSlidesIndex.value = props.carouselSlides.length - 1;
+    currentSubSlidesIndex.value = props.slides.length - 1;
   } else {
     currentSubSlidesIndex.value -= 1;
   }
@@ -52,11 +52,11 @@ function goToSlide(index) {
 function autoPlay() {
   setInterval(() => {
     nextSlide();
-  }, props.timeout);
+  }, props.timeoutInMilliseconds);
 }
 
 onMounted(() => {
-  if(props.startAutoPlay) {
+  if(props.shouldStartAutoPlay) {
     autoPlay();
   }
 })
@@ -66,13 +66,13 @@ onMounted(() => {
 <template>
   <div class="carousel">
     <div class="carousel__content content">
-      <template v-if="navigation">
+      <template v-if="showNavigation">
         <div class="content__arrow-box content__arrow-box--left" @click="prevSlide">
           <img class="arrow-img" :src="require(`@/assets/Carousel/arrow_white.png`)" alt="Previous slide arrow icon"/>
         </div>
       </template>
         <div class="content__slides slides">
-          <template v-for="(subSlides, index) in carouselSlides" :key="index">
+          <template v-for="(subSlides, index) in slides" :key="index">
             <template v-if="currentSubSlidesIndex === index">
               <template v-for="slide in subSlides" :key="slide.imagePath">
                 <div class="slides__slide slide">
@@ -82,16 +82,16 @@ onMounted(() => {
             </template>
           </template>
         </div>
-      <template v-if="navigation">
+      <template v-if="showNavigation">
         <div class="content__arrow-box content__arrow-box--right" @click="nextSlide">
           <img class="arrow-img" :src="require(`@/assets/Carousel/arrow_white.png`)" alt="Next slide arrow icon"/>
         </div>
       </template>
     </div>
-    <div v-if="pagination" class="carousel__pagination pagination">
+    <div v-if="showPagination" class="carousel__pagination pagination">
         <span class="pagination__dot"
             @click="goToSlide(index)"
-            v-for="(slide, index) in carouselSlides.length"
+            v-for="(slide, index) in slides.length"
             :key="index"
             :class="{'pagination__dot--active': index === currentSubSlidesIndex}" >
         </span>
