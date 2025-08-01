@@ -107,8 +107,8 @@ onMounted(() => {
     </div>
     <div v-if="showPagination" class="carousel__pagination pagination">
       <span
-        v-for="index in slides.length"
-        :key="index"
+        v-for="(slideNumber, index) in slides.length"
+        :key="slideNumber"
         class="pagination__dot"
         :class="{ 'pagination__dot--active': index === currentSubSlidesIndex }"
         @click="goToSlide(index)"
