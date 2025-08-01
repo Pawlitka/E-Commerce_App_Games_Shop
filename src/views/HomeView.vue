@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import TopGamesCarousel from "../components/TopGamesCarousel.vue";
+import TopGamesCarousel from "@/components/TopGamesCarousel.vue";
 
 const carouselSlides = [
   [
