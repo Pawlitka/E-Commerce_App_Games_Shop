@@ -1,27 +1,27 @@
 <script setup>
-import {onMounted, defineProps, ref} from "vue";
+import { onMounted, defineProps, ref } from "vue";
 
 const props = defineProps({
   shouldStartAutoPlay: {
     type: Boolean,
-    default: false
+    default: false,
   },
   timeoutInMilliseconds: {
     type: Number,
-    default: 5000
+    default: 5000,
   },
   showNavigation: {
     type: Boolean,
-    default: true
+    default: true,
   },
   showPagination: {
     type: Boolean,
-    default: true
+    default: true,
   },
   slides: {
     type: Array,
     default: () => [],
-    required: true
+    required: true,
   },
 });
 
@@ -29,7 +29,7 @@ const currentSubSlidesIndex = ref(0);
 
 function nextSlide() {
   const isLastSlide = currentSubSlidesIndex.value === props.slides.length - 1;
-  if(isLastSlide) {
+  if (isLastSlide) {
     currentSubSlidesIndex.value = 0;
   } else {
     currentSubSlidesIndex.value += 1;
@@ -38,7 +38,7 @@ function nextSlide() {
 
 function prevSlide() {
   const isFirstSlide = currentSubSlidesIndex.value === 0;
-  if(isFirstSlide) {
+  if (isFirstSlide) {
     currentSubSlidesIndex.value = props.slides.length - 1;
   } else {
     currentSubSlidesIndex.value -= 1;
@@ -56,51 +56,69 @@ function autoPlay() {
 }
 
 onMounted(() => {
-  if(props.shouldStartAutoPlay) {
+  if (props.shouldStartAutoPlay) {
     autoPlay();
   }
-})
-
+});
 </script>
 
 <template>
   <div class="carousel">
     <div class="carousel__content content">
       <template v-if="showNavigation">
-        <div class="content__arrow-box content__arrow-box--left" @click="prevSlide">
-          <img class="arrow-img" :src="require(`@/assets/Carousel/arrow_white.png`)" alt="Previous slide arrow icon"/>
+        <div
+          class="content__arrow-box content__arrow-box--left"
+          @click="prevSlide"
+        >
+          <img
+            class="arrow-img"
+            :src="require(`@/assets/Carousel/arrow_white.png`)"
+            alt="Previous slide arrow icon"
+          />
         </div>
       </template>
-        <div class="content__slides slides">
-          <template v-for="(subSlides, index) in slides" :key="index">
-            <template v-if="currentSubSlidesIndex === index">
-              <template v-for="slide in subSlides" :key="slide.imagePath">
-                <div class="slides__slide slide">
-                  <img class="slide__image" :src="require(`@/assets/${slide.imagePath}`)" :alt="slide.alternativeText">
-                </div>
-              </template>
+      <div class="content__slides slides">
+        <template v-for="(subSlides, index) in slides" :key="index">
+          <template v-if="currentSubSlidesIndex === index">
+            <template v-for="slide in subSlides" :key="slide.imagePath">
+              <div class="slides__slide slide">
+                <img
+                  class="slide__image"
+                  :src="require(`@/assets/${slide.imagePath}`)"
+                  :alt="slide.alternativeText"
+                />
+              </div>
             </template>
           </template>
-        </div>
+        </template>
+      </div>
       <template v-if="showNavigation">
-        <div class="content__arrow-box content__arrow-box--right" @click="nextSlide">
-          <img class="arrow-img" :src="require(`@/assets/Carousel/arrow_white.png`)" alt="Next slide arrow icon"/>
+        <div
+          class="content__arrow-box content__arrow-box--right"
+          @click="nextSlide"
+        >
+          <img
+            class="arrow-img"
+            :src="require(`@/assets/Carousel/arrow_white.png`)"
+            alt="Next slide arrow icon"
+          />
         </div>
       </template>
     </div>
     <div v-if="showPagination" class="carousel__pagination pagination">
-        <span class="pagination__dot"
-            @click="goToSlide(index)"
-            v-for="(slide, index) in slides.length"
-            :key="index"
-            :class="{'pagination__dot--active': index === currentSubSlidesIndex}" >
-        </span>
+      <span
+        v-for="(slideNumber, index) in slides.length"
+        :key="slideNumber"
+        class="pagination__dot"
+        :class="{ 'pagination__dot--active': index === currentSubSlidesIndex }"
+        @click="goToSlide(index)"
+      >
+      </span>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-
 .carousel {
   display: flex;
   flex-direction: column;
@@ -126,7 +144,7 @@ onMounted(() => {
     width: 75px;
     height: 75px;
     border-radius: 50%;
-    background-color: #0073E5;
+    background-color: #0073e5;
     cursor: pointer;
 
     &--right {
@@ -149,7 +167,7 @@ onMounted(() => {
 }
 
 .slides::before {
-  content: '';
+  content: "";
   position: absolute;
   display: block;
   top: 0;
@@ -188,13 +206,12 @@ onMounted(() => {
     height: 30px;
     margin-top: 35px;
     border-radius: 50%;
-    background-color: #92BFEB;
+    background-color: #92bfeb;
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25), 0 1px 2px 0 rgba(0, 0, 0, 0.25);
 
     &--active {
-      background-color: #0073E5;
+      background-color: #0073e5;
     }
   }
 }
-
 </style>
