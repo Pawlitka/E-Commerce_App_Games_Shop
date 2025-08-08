@@ -35,6 +35,13 @@ const props = defineProps({
     </div>
     <div :class="[$style.cart, $style['game-tile__cart']]">
       <h1 :class="[$style['cart__price']]">PLN 159.99</h1>
+      <div :class="$style['cart__rate']">
+        <img
+          :class="$style['cart__rate--icon']"
+          :src="require('@/assets/GameTile/star.png')"
+          alt="Star icon"
+        />
+      </div>
       <div :class="$style['cart__button']">
         <button type="button" :class="$style['cart__button--default']">
           <img
@@ -143,6 +150,20 @@ const props = defineProps({
     justify-content: center;
     align-items: center;
     padding: 30px 20px 0 15px;
+  }
+
+  &__rate {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 20%;
+
+    &--icon {
+      max-width: 30px;
+      max-height: 30px;
+    }
   }
 
   &__button {
