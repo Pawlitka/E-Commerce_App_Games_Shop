@@ -24,7 +24,6 @@ const props = defineProps({
     required: true,
   },
 });
-
 const currentSubSlidesIndex = ref(0);
 
 function nextSlide() {
@@ -122,7 +121,7 @@ onMounted(() => {
           $style['pagination__dot'],
           {
             [$style['pagination__dot--active']]:
-              index === currentSubSlidesIndex.value,
+              index === currentSubSlidesIndex,
           },
         ]"
         @click="goToSlide(index)"

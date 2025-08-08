@@ -13,35 +13,33 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="game-tile">
-    <div class="game-tile__images">
-      <img
-        class="game-tile__image"
-        :src="require('@/assets/Cyberpunk2077.jpg')"
-        :alt="gameTileTitle"
-      />
-    </div>
-    <div class="game-tile_content">
-      <div class="game-tile__title">CYBERPUNK 2077</div>
-      <div class="game-tile__genres">
+  <div :class="$style['game-tile']">
+    <img
+      :class="$style['game-tile__image']"
+      :src="require('@/assets/Cyberpunk2077.jpg')"
+      :alt="gameTileTitle"
+    />
+    <div :class="$style['game-tile_content']">
+      <div :class="$style['game-tile__title']">CYBERPUNK 2077</div>
+      <div :class="$style['game-tile__genres']">
         <template v-for="index in genres" :key="index">
-          <div class="game-tile__genre">{{ index.type }}</div>
+          <div :class="$style['game-tile__genre']">{{ index.name }}</div>
         </template>
       </div>
-      <div class="game-tile__description">
+      <div :class="$style['game-tile__description']">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
         imperdiet aliquet urna, nec posuere dui efficitur in. Nam cursus dapibus
         est, quis laoreet tellus viverra nec. Fusce nec libero enim. Vestibulum
         non porttitor velit... Read more
       </div>
     </div>
-    <div class="game-tile__content--end--part">
-      <div class="game-tile__cart">Cart</div>
+    <div :class="$style['game-tile__end-part']">
+      <div :class="$style['game-tile__cart']">Cart</div>
     </div>
   </div>
 </template>
 
-<style scoped lang="scss">
+<style module lang="scss">
 .game-tile {
   display: flex;
   flex-direction: row;
@@ -56,14 +54,11 @@ const props = defineProps({
     display: flex;
   }
 
-  &__images {
-    border-right: 2px black solid;
-    height: 100%;
-  }
-
   &__image {
+    object-fit: cover;
     width: 214px;
     height: 250px;
+    border-right: 2px black solid;
   }
 }
 .game-tile__content--end--part {
@@ -75,7 +70,7 @@ const props = defineProps({
 }
 
 .game-tile_content {
-  width: 60%;
+  width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
