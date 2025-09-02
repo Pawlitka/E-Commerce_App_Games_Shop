@@ -1,30 +1,24 @@
-# e-commerce_app
+# Purrchase
 
-This template should help get you started developing with Vue 3 in Vite.
+Purrchase is a dynamic E-Commerce web application built with Vue.js, inspired by online platforms for buying video games.
+The project is currently under development and already features a game carousel and game tiles.
 
-## Recommended IDE Setup
+## Features (Current)
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- Game carousel – rotating showcase of featured games.
 
-## Customize configuration
+- Game tiles – individual game cards to display title, image, and basic information.
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## Planned Features
 
-## Project Setup
+- Shopping cart – add, remove, and manage selected games.
 
-```sh
-npm install
-```
+- Navigation header – easy access to store sections.
 
-### Compile and Hot-Reload for Development
+- Footer – additional links and information.
 
-```sh
-npm run dev
-```
+- Search bar – search games by name.
 
-### Compile and Minify for Production
+- Category filtering – browse games by genres (e.g., Horror, RPG).
 
-```sh
-npm run build
-```
-# E-Commerce_App_Games_Shop
+- Platform filtering – filter games by available platforms (PC, PlayStation, Xbox, etc.).
