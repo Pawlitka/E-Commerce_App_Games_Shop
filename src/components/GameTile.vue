@@ -4,10 +4,10 @@ const gameTileTitle = ref("Game");
 
 // eslint-disable-next-line no-unused-vars
 const props = defineProps({
-  genres: {
-    type: Array,
+  tile: {
+    type: Object,
     required: true,
-    default: () => [],
+    default: () => null,
   },
 });
 </script>
@@ -16,50 +16,54 @@ const props = defineProps({
   <div :class="$style['game-tile']">
     <img
       :class="$style['game-tile__image']"
-      :src="require('@/assets/Cyberpunk2077.jpg')"
+      :src="require(`@/assets/${tile.imagePath}`)"
       :alt="gameTileTitle"
     />
     <div :class="[$style.content, $style['game-tile__content']]">
-      <div :class="$style['content__title']">CYBERPUNK 2077</div>
+      <div :class="$style['content__title']">{{ tile.title }}</div>
       <div :class="$style['content__genres']">
-        <template v-for="index in genres" :key="index">
-          <div :class="$style['content__genre']">{{ index.name }}</div>
+        <template v-for="genre in tile.genres" :key="genre">
+          <div :class="$style['genres__genre']">
+            {{ genre.name }}
+          </div>
         </template>
       </div>
+
       <div :class="$style['content__description']">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-        imperdiet aliquet urna, nec posuere dui efficitur in. Nam cursus dapibus
-        est, quis laoreet tellus viverra nec. Fusce nec libero enim. Vestibulum
-        non porttitor velit... Read more
+        {{ tile.description }}
       </div>
     </div>
     <div :class="[$style.cart, $style['game-tile__cart']]">
-      <h1 :class="[$style['cart__price']]">PLN 159.99</h1>
+      <span :class="[$style['cart__price']]">{{ tile.price }}</span>
       <div :class="$style['cart__rate']">
-        <div :class="$style['cart__rate--stars']">
+        <div :class="$style['rate__stars']">
           <img
-            :class="$style['cart__rate--icon']"
+            :class="$style['stars__icon']"
             :src="require('@/assets/GameTile/star.png')"
             alt="Star icon"
           />
           <img
-            :class="$style['cart__rate--icon']"
+            :class="$style['stars__icon']"
             :src="require('@/assets/GameTile/star.png')"
             alt="Star icon"
           />
         </div>
-        <h1 :class="$style['cart__rate--reviews']">2137 reviews</h1>
+        <span :class="$style['rate__reviews']">
+          {{ tile.reviews }}
+        </span>
       </div>
+      <!-- TODO Start CommerceButton (:iconSource, :iconAlternativeText :label, @click)-->
       <div :class="$style['cart__button']">
         <button type="button" :class="$style['cart__button--default']">
           <img
-            :class="$style['cart__button--icon']"
+            :class="$style['button__icon']"
             :src="require('@/assets/GameTile/shopping-cart_white.png')"
             alt="Shopping cart icon"
           />
-          <h1 :class="$style['cart__button--text']">ADD TO CART</h1>
+          <span :class="$style['cart__button--text']">ADD TO CART</span>
         </button>
       </div>
+      <!--      END COMMERCEBUTTON-->
     </div>
   </div>
 </template>
@@ -85,7 +89,6 @@ const props = defineProps({
   &__content {
     width: 100%;
     height: 100%;
-    display: flex;
     flex-direction: column;
     align-items: center;
   }
@@ -100,6 +103,7 @@ const props = defineProps({
 }
 
 .content {
+  display: flex;
   &__title {
     width: 100%;
     display: flex;
@@ -117,17 +121,6 @@ const props = defineProps({
     gap: 10px;
     flex-direction: row;
     display: flex;
-  }
-
-  &__genre {
-    width: 130px;
-    height: 30px;
-    display: flex;
-    background: #c2a875;
-    color: #f5f5f5;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
   }
 
   &__description {
@@ -154,6 +147,9 @@ const props = defineProps({
     align-items: center;
     margin: 30px 20px 0 15px;
     padding: 0 20px 0 0;
+    font-family: Inter, serif;
+    font-size: 1.8rem;
+    font-weight: bold;
   }
 
   &__rate {
@@ -166,17 +162,7 @@ const props = defineProps({
     padding: 15px 20px 20px 20px;
     margin: 0 0 0 0;
 
-    &--icon {
-      max-width: 30px;
-      max-height: 30px;
-    }
-
-    &--stars {
-      display: flex;
-      flex-direction: row;
-    }
-
-    &--reviews {
+    &__reviews {
       display: flex;
       justify-content: end;
       width: 100%;
@@ -210,6 +196,10 @@ const props = defineProps({
       color: #f5f5f5;
     }
 
+    &--default:hover {
+      background-color: rgba(0, 115, 229, 0.8);
+    }
+
     &--icon {
       object-fit: cover;
       width: 30px;
@@ -223,6 +213,40 @@ const props = defineProps({
       font-family: Inter, serif;
       font-weight: bold;
     }
+  }
+}
+
+.button {
+  &__icon {
+    max-width: 30px;
+    max-height: 30px;
+  }
+}
+
+.rate {
+  &__stars {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+.stars {
+  &__icon {
+    max-width: 30px;
+    max-height: 30px;
+  }
+}
+
+.genres {
+  &__genre {
+    width: 130px;
+    height: 30px;
+    display: flex;
+    background: #c2a875;
+    color: #f5f5f5;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
   }
 }
 </style>

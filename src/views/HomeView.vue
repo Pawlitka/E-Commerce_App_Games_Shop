@@ -3,8 +3,11 @@
     <TopGamesCarousel
       :slides="carouselSlides"
       :class="$style['home__games-carousel']"
+      :should-start-auto-play="true"
     />
-    <GameTile :genres="genre" :class="$style['home__game-tile']" />
+    <template v-for="gameDetail in gameDetails" :key="gameDetail">
+      <GameTile :class="$style['home__game-tile']" :tile="gameDetail" />
+    </template>
   </div>
 </template>
 
@@ -68,18 +71,40 @@ const carouselSlides = [
       imagePath: "Cyberpunk2077.jpg",
       alternativeText: "Image of game Cyberpunk 2077.",
     },
-    {
-      imagePath: "Cyberpunk2077.jpg",
-      alternativeText: "Image of game Cyberpunk 2077.",
-    },
   ],
 ];
 
-const genre = [
-  { name: "Adventure" },
-  { name: "RPG" },
-  { name: "CO-OP" },
-  { name: "Horror" },
+const gameDetails = [
+  {
+    genres: [
+      { name: "Adventure" },
+      { name: "RPG" },
+      { name: "CO-OP" },
+      { name: "Horror" },
+    ],
+    imagePath: "Cyberpunk2077.jpg",
+    title: "CyberPunk 2077",
+    price: "PLN 159.99",
+    reviews: "2137 reviews",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse\n" +
+      "        imperdiet aliquet urna, nec posuere dui efficitur in. Nam cursus dapibus\n" +
+      "        est, quis laoreet tellus viverra nec. Fusce nec libero enim. Vestibulum\n" +
+      "        non porttitor velit... Read more",
+  },
+
+  {
+    genres: [{ name: "Adventure" }, { name: "RRRR" }],
+    imagePath: "TombRaider.jpg",
+    title: "TombRaider",
+    price: "PLN 99.99",
+    reviews: "100 reviews",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse\n" +
+      "        imperdiet aliquet urna, nec posuere dui efficitur in. Nam cursus dapibus\n" +
+      "        est, quis laoreet tellus viverra nec. Fusce nec libero enim. Vestibulum\n" +
+      "        non porttitor velit... Read more",
+  },
 ];
 </script>
 
@@ -97,6 +122,7 @@ const genre = [
 
   &__game-tile {
     padding: 10px 10px 10px 10px;
+    margin-bottom: 80px;
   }
 }
 </style>
