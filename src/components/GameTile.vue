@@ -1,5 +1,7 @@
 <script setup>
-import { ref, defineProps } from "vue";
+import { defineProps, ref } from "vue";
+import CustomButton from "@/components/CustomButton.vue";
+
 const gameTileTitle = ref("Game");
 
 // eslint-disable-next-line no-unused-vars
@@ -10,6 +12,10 @@ const props = defineProps({
     default: () => null,
   },
 });
+
+function onClickAddToCart() {
+  console.log("clickAddToCart!!!");
+}
 </script>
 
 <template>
@@ -38,32 +44,24 @@ const props = defineProps({
       <div :class="$style['cart__rate']">
         <div :class="$style['rate__stars']">
           <img
-            :class="$style['stars__icon']"
-            :src="require('@/assets/GameTile/star.png')"
-            alt="Star icon"
-          />
-          <img
+            v-for="stars in tile.star"
+            :key="stars"
             :class="$style['stars__icon']"
             :src="require('@/assets/GameTile/star.png')"
             alt="Star icon"
           />
         </div>
         <span :class="$style['rate__reviews']">
-          {{ tile.reviews }}
+          {{ tile.reviews }} reviews
         </span>
       </div>
-      <!-- TODO Start CommerceButton (:iconSource, :iconAlternativeText :label, @click)-->
-      <div :class="$style['cart__button']">
-        <button type="button" :class="$style['cart__button--default']">
-          <img
-            :class="$style['button__icon']"
-            :src="require('@/assets/GameTile/shopping-cart_white.png')"
-            alt="Shopping cart icon"
-          />
-          <span :class="$style['cart__button--text']">ADD TO CART</span>
-        </button>
-      </div>
-      <!--      END COMMERCEBUTTON-->
+      <CustomButton
+        :icon-source="require(`@/assets/GameTile/shopping-cart_white.png`)"
+        icon-alternative-text="shopping-cart_white.png"
+        label="ADD TO CART"
+        :class="$style['cart__button']"
+        @click="onClickAddToCart"
+      ></CustomButton>
     </div>
   </div>
 </template>
@@ -76,25 +74,26 @@ const props = defineProps({
   justify-content: center;
   width: 1200px;
   height: 250px;
-  border-radius: 10px;
+  border-radius: 5px;
   background-color: #f5f5f5;
+  border: 1px #f5f5f5 solid;
 
   &__image {
     object-fit: cover;
     max-width: 214px;
+    width: 100%;
     height: 250px;
     border-right: 2px black solid;
   }
 
   &__content {
-    width: 100%;
+    width: 85%;
     height: 100%;
     flex-direction: column;
     align-items: center;
   }
 
   &__cart {
-    width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -103,15 +102,16 @@ const props = defineProps({
 }
 
 .content {
+  height: 250px;
   display: flex;
+  padding-top: 10px;
   &__title {
-    width: 100%;
     display: flex;
-    justify-content: start;
-    padding: 20px 0 0 20px;
+    padding: 5px 20px 0 20px;
     font-weight: bold;
-    font-size: 2rem;
+    font-size: 2.5rem;
     font-family: Inter, serif;
+    border-radius: 20px;
   }
 
   &__genres {
@@ -127,7 +127,7 @@ const props = defineProps({
     width: 700px;
     display: flex;
     height: 100%;
-    padding: 20px 45px 70px 20px;
+    padding: 25px 45px 70px 10px;
   }
 }
 
@@ -137,29 +137,27 @@ const props = defineProps({
   align-items: center;
   justify-content: center;
   width: 220px;
-  height: 250px;
 
   &__price {
     display: flex;
     width: 100%;
-    height: 50px;
+    height: 40px;
     justify-content: flex-end;
     align-items: center;
-    margin: 30px 20px 0 15px;
+    margin: 5px 20px 0 15px;
     padding: 0 20px 0 0;
-    font-family: Inter, serif;
+    font-family: Inter, bold, serif;
     font-size: 1.8rem;
-    font-weight: bold;
+    font-weight: 1000;
   }
 
   &__rate {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    justify-content: flex-start;
     width: 100%;
-    height: 200px;
-    padding: 15px 20px 20px 20px;
+    height: 100px;
+    padding: 10px 20px 0 0;
     margin: 0 0 0 0;
 
     &__reviews {
@@ -181,24 +179,8 @@ const props = defineProps({
     align-items: center;
     width: 100%;
     height: 40px;
-    margin: 0 20px 20px 0;
-
-    &--default {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: center;
-      width: 200px;
-      height: 40px;
-      border: none;
-      border-radius: 10px;
-      background-color: #0073e5;
-      color: #f5f5f5;
-    }
-
-    &--default:hover {
-      background-color: rgba(0, 115, 229, 0.8);
-    }
+    margin: 10px 30px 0 0;
+    padding: 5px;
 
     &--icon {
       object-fit: cover;

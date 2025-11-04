@@ -8,7 +8,7 @@ const props = defineProps({
   },
   timeoutInMilliseconds: {
     type: Number,
-    default: 5000,
+    default: 2000,
   },
   showNavigation: {
     type: Boolean,
@@ -135,18 +135,10 @@ onMounted(() => {
 .carousel {
   display: flex;
   flex-direction: column;
-
-  &__pagination {
-    width: 100%;
-  }
-
-  &__content {
-    width: 100%;
-    height: 100%;
-  }
 }
 
 .content {
+  position: relative;
   display: flex;
   align-items: center;
 

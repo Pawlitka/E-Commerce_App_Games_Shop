@@ -85,7 +85,8 @@ const gameDetails = [
     imagePath: "Cyberpunk2077.jpg",
     title: "CyberPunk 2077",
     price: "PLN 159.99",
-    reviews: "2137 reviews",
+    reviews: "2137",
+    star: 3,
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse\n" +
       "        imperdiet aliquet urna, nec posuere dui efficitur in. Nam cursus dapibus\n" +
@@ -98,7 +99,22 @@ const gameDetails = [
     imagePath: "TombRaider.jpg",
     title: "TombRaider",
     price: "PLN 99.99",
-    reviews: "100 reviews",
+    reviews: "100",
+    star: 5,
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse\n" +
+      "        imperdiet aliquet urna, nec posuere dui efficitur in. Nam cursus dapibus\n" +
+      "        est, quis laoreet tellus viverra nec. Fusce nec libero enim. Vestibulum\n" +
+      "        non porttitor velit... Read more",
+  },
+
+  {
+    genres: [{ name: "Adventure" }, { name: "Adult" }],
+    imagePath: "Witcher_3.jpg",
+    title: "The Witcher 3",
+    price: "PLN 59.99",
+    reviews: "10000",
+    star: 4,
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse\n" +
       "        imperdiet aliquet urna, nec posuere dui efficitur in. Nam cursus dapibus\n" +
@@ -121,7 +137,6 @@ const gameDetails = [
   }
 
   &__game-tile {
-    padding: 10px 10px 10px 10px;
     margin-bottom: 80px;
   }
 }
