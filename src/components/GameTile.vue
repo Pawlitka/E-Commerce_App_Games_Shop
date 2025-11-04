@@ -17,13 +17,18 @@ const props = defineProps({
 });
 
 function isDiscount() {
-  return !!props.tile.discountInPercentage;
+  const discountInPercentage = props.tile?.discountInPercentage ?? 0;
+  return discountInPercentage > 0;
 }
 
 function discountedPrice() {
-  return (
-    props.tile.price -
-    (props.tile.price * props.tile.discountInPercentage) / 100
+  let discountInPercentage = Math.max(
+    Math.min(props.tile.discountInPercentage, 100),
+    1
+  );
+  return Math.max(
+    props.tile.price - (props.tile.price * discountInPercentage) / 100,
+    0.01
   ).toFixed(2);
 }
 
