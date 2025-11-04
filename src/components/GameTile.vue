@@ -1,8 +1,6 @@
 <script setup>
-import { defineProps, ref } from "vue";
+import { defineProps } from "vue";
 import CustomButton from "@/components/CustomButton.vue";
-
-const gameTileTitle = ref("Game");
 
 // eslint-disable-next-line no-unused-vars
 const props = defineProps({
@@ -12,6 +10,10 @@ const props = defineProps({
     default: () => null,
   },
 });
+
+function isDiscount() {
+  return !!props.tile.discount;
+}
 
 function onClickAddToCart() {
   console.log("clickAddToCart!!!");
@@ -23,7 +25,7 @@ function onClickAddToCart() {
     <img
       :class="$style['game-tile__image']"
       :src="require(`@/assets/${tile.imagePath}`)"
-      :alt="gameTileTitle"
+      :alt="tile.imagePath"
     />
     <div :class="[$style.content, $style['game-tile__content']]">
       <div :class="$style['content__title']">{{ tile.title }}</div>
@@ -40,7 +42,11 @@ function onClickAddToCart() {
       </div>
     </div>
     <div :class="[$style.cart, $style['game-tile__cart']]">
-      <span :class="[$style['cart__price']]">{{ tile.price }}</span>
+      <div v-if="isDiscount() === true" :class="$style['cart__price']">
+        <span :class="[$style['cart__price__before']]">{{ tile.price }}</span>
+        <span :class="[$style['cart__price__after']]">{{ tile.discount }}</span>
+      </div>
+      <div v-else :class="$style['cart__price']">{{ tile.price }}</div>
       <div :class="$style['cart__rate']">
         <div :class="$style['rate__stars']">
           <img
@@ -140,15 +146,31 @@ function onClickAddToCart() {
 
   &__price {
     display: flex;
+    flex-direction: column;
     width: 100%;
     height: 40px;
     justify-content: flex-end;
-    align-items: center;
-    margin: 5px 20px 0 15px;
-    padding: 0 20px 0 0;
+    margin: 5px 10px 0 0;
+    padding: 0 10px 0 0;
     font-family: Inter, bold, serif;
-    font-size: 1.8rem;
-    font-weight: 1000;
+    font-size: 2rem;
+    font-weight: bold;
+
+    &__before {
+      display: flex;
+      justify-content: flex-end;
+      font-size: 1.3rem;
+      color: black;
+      text-decoration: line-through;
+      opacity: 0.6;
+      font-weight: normal;
+    }
+
+    &__after {
+      font-size: 2rem;
+      font-weight: bold;
+      color: green;
+    }
   }
 
   &__rate {
