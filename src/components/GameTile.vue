@@ -17,7 +17,14 @@ const props = defineProps({
 });
 
 function isDiscount() {
-  return !!props.tile.discount;
+  return !!props.tile.discountInPercentage;
+}
+
+function discountedPrice() {
+  return (
+    props.tile.price -
+    (props.tile.price * props.tile.discountInPercentage) / 100
+  ).toFixed(2);
 }
 
 function onClickAddToCart() {
@@ -52,7 +59,7 @@ function onClickAddToCart() {
           >{{ currency }} {{ tile.price }}</span
         >
         <span :class="[$style['cart__price__after']]"
-          >{{ currency }} {{ tile.discount }}</span
+          >{{ currency }} {{ discountedPrice() }}</span
         >
       </div>
       <div v-else :class="$style['cart__price']">

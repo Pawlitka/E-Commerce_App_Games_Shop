@@ -89,7 +89,7 @@ const gameDetails = [
     imagePath: "Cyberpunk2077.jpg",
     title: "CyberPunk 2077",
     price: 159.99,
-    discount: 69.99,
+    discountInPercentage: 70,
     reviews: 2137,
     star: 3,
     description:
@@ -104,7 +104,7 @@ const gameDetails = [
     imagePath: "TombRaider.jpg",
     title: "TombRaider",
     price: 99.99,
-    discount: 19.99,
+    discountInPercentage: 10,
     reviews: 100,
     star: 5,
     description:
