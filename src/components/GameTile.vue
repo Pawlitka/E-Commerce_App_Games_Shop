@@ -9,6 +9,11 @@ const props = defineProps({
     required: true,
     default: () => null,
   },
+  currency: {
+    type: String,
+    default: "USD",
+    required: true,
+  },
 });
 
 function isDiscount() {
@@ -43,10 +48,16 @@ function onClickAddToCart() {
     </div>
     <div :class="[$style.cart, $style['game-tile__cart']]">
       <div v-if="isDiscount() === true" :class="$style['cart__price']">
-        <span :class="[$style['cart__price__before']]">{{ tile.price }}</span>
-        <span :class="[$style['cart__price__after']]">{{ tile.discount }}</span>
+        <span :class="[$style['cart__price__before']]"
+          >{{ currency }} {{ tile.price }}</span
+        >
+        <span :class="[$style['cart__price__after']]"
+          >{{ currency }} {{ tile.discount }}</span
+        >
       </div>
-      <div v-else :class="$style['cart__price']">{{ tile.price }}</div>
+      <div v-else :class="$style['cart__price']">
+        {{ currency }} {{ tile.price }}
+      </div>
       <div :class="$style['cart__rate']">
         <div :class="$style['rate__stars']">
           <img

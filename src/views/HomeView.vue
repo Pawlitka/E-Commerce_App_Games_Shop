@@ -6,7 +6,11 @@
       :should-start-auto-play="true"
     />
     <template v-for="gameDetail in gameDetails" :key="gameDetail">
-      <GameTile :class="$style['home__game-tile']" :tile="gameDetail" />
+      <GameTile
+        :class="$style['home__game-tile']"
+        :tile="gameDetail"
+        :currency="currency"
+      />
     </template>
   </div>
 </template>
@@ -84,9 +88,9 @@ const gameDetails = [
     ],
     imagePath: "Cyberpunk2077.jpg",
     title: "CyberPunk 2077",
-    price: "PLN 159.99",
-    discount: "PLN 69.99",
-    reviews: "2137",
+    price: 159.99,
+    discount: 69.99,
+    reviews: 2137,
     star: 3,
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse\n" +
@@ -99,9 +103,9 @@ const gameDetails = [
     genres: [{ name: "Adventure" }, { name: "RRRR" }],
     imagePath: "TombRaider.jpg",
     title: "TombRaider",
-    price: "PLN 99.99",
-    discount: "PLN 19.99",
-    reviews: "100",
+    price: 99.99,
+    discount: 19.99,
+    reviews: 100,
     star: 5,
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse\n" +
@@ -114,8 +118,8 @@ const gameDetails = [
     genres: [{ name: "Adventure" }, { name: "Adult" }],
     imagePath: "Witcher_3.jpg",
     title: "The Witcher 3",
-    price: "PLN 59.99",
-    reviews: "10000",
+    price: 59.99,
+    reviews: 10000,
     star: 4,
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse\n" +
@@ -124,6 +128,8 @@ const gameDetails = [
       "        non porttitor velit... Read more",
   },
 ];
+
+const currency = "PLN";
 </script>
 
 <style module lang="scss">
