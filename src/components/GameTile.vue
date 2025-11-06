@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, defineProps } from "vue";
+import { reactive, defineProps, computed } from "vue";
 import CustomButton from "@/components/CustomButton.vue";
 
 const props = defineProps({
@@ -13,6 +13,21 @@ const props = defineProps({
     default: "USD",
     required: true,
   },
+});
+
+const platformIconStyle = computed(() => {
+  if (props.tile?.platform) {
+    try {
+      const iconUrl = require(`@/assets/GameTile/${props.tile.platform}-logo.png`);
+      return { "--platform-icon": `url(${iconUrl})` };
+    } catch (e) {
+      console.error(
+        `Nie można załadować ikony dla platformy: ${props.tile.platform}`
+      );
+      return {};
+    }
+  }
+  return {};
 });
 
 const addToCartButton = reactive({
@@ -51,7 +66,11 @@ function handleNavigateToGamePage() {
 </script>
 
 <template>
-  <div :class="$style['game-tile']" @click="handleNavigateToGamePage">
+  <div
+    :style="platformIconStyle"
+    :class="$style['game-tile']"
+    @click="handleNavigateToGamePage"
+  >
     <div :class="$style['game-tile__image-container']">
       <img
         :class="$style['game-tile__image']"
@@ -137,7 +156,7 @@ function handleNavigateToGamePage() {
 
     &::after {
       content: "";
-      background-image: url("@/assets/GameTile/playstation-logotype.png");
+      background-image: var(--platform-icon);
       background-size: 35px 35px;
       background-position: center;
       background-repeat: no-repeat;

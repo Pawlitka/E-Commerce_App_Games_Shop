@@ -86,6 +86,7 @@ const gameDetails = [
       { name: "CO-OP" },
       { name: "Horror" },
     ],
+    platform: "apple",
     imagePath: "Cyberpunk2077.jpg",
     title: "CyberPunk 2077",
     price: 159.99,
@@ -101,6 +102,7 @@ const gameDetails = [
 
   {
     genres: [{ name: "Adventure" }, { name: "RRRR" }],
+    platform: "playstation",
     imagePath: "TombRaider.jpg",
     title: "TombRaider",
     price: 99.99,
@@ -116,6 +118,7 @@ const gameDetails = [
 
   {
     genres: [{ name: "Adventure" }, { name: "Adult" }],
+    platform: "playstation",
     imagePath: "Witcher_3.jpg",
     title: "The Witcher 3",
     price: 59.99,
