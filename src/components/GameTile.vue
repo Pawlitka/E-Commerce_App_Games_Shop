@@ -44,10 +44,14 @@ function handleAddToCartButtonDisabled() {
   addToCartButton.iconAlternativeText = "shopping-cart_after.png";
   addToCartButton.label = "ADDED";
 }
+
+function handleNavigateToGamePage() {
+  console.log("Navigate to game page");
+}
 </script>
 
 <template>
-  <div :class="$style['game-tile']">
+  <div :class="$style['game-tile']" @click="handleNavigateToGamePage">
     <img
       :class="$style['game-tile__image']"
       :src="require(`@/assets/${tile.imagePath}`)"
@@ -118,6 +122,10 @@ function handleAddToCartButtonDisabled() {
   border: 1px #f5f5f5 solid;
   transform: scale(1);
   transition: transform 200ms ease-in-out;
+
+  &:hover {
+    cursor: pointer;
+  }
 
   &__image {
     object-fit: cover;

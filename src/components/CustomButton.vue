@@ -46,7 +46,7 @@ function isDisabled() {
       { [$style['button--disabled']]: isDisabled() },
     ]"
     type="button"
-    @click="$emit('click')"
+    @click.stop="$emit('click')"
   >
     <img
       v-if="showIcon()"
