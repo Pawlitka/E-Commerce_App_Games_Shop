@@ -106,6 +106,8 @@ function onClickAddToCart() {
   border-radius: 5px;
   background-color: #f5f5f5;
   border: 1px #f5f5f5 solid;
+  transform: scale(1);
+  transition: transform 200ms ease-in-out;
 
   &__image {
     object-fit: cover;
@@ -131,28 +133,8 @@ function onClickAddToCart() {
 }
 
 .game-tile:hover {
-  animation: box-move-animation 500ms 1 forwards;
-}
-.game-tile:not(:hover) {
-  animation: box-move 500ms 1 forwards;
-}
-
-@keyframes box-move {
-  0% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-@keyframes box-move-animation {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(1.05);
-  }
+  transform: scale(1.05);
+  transition: transform 300ms ease-in-out;
 }
 
 .content {

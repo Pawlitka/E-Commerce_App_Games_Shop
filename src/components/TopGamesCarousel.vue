@@ -8,7 +8,7 @@ const props = defineProps({
   },
   timeoutInMilliseconds: {
     type: Number,
-    default: 2000,
+    default: 3000,
   },
   showNavigation: {
     type: Boolean,
@@ -228,6 +228,9 @@ watch(
 }
 
 .slide {
+  transform: scale(1);
+  transition: transform 200ms ease-in-out;
+
   &__image {
     object-fit: cover;
     width: 230px;
@@ -238,27 +241,8 @@ watch(
 }
 
 .slide:hover {
-  animation: box-move-animation 500ms 1 forwards;
-}
-.slide:not(:hover) {
-  animation: box-move 500ms 1 forwards;
-}
-@keyframes box-move {
-  0% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-@keyframes box-move-animation {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(1.05);
-  }
+  transform: scale(1.05);
+  transition: transform 300ms ease-in-out;
 }
 
 .arrow_img {
