@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, defineProps, ref } from "vue";
+import { onMounted, defineProps, ref, onUnmounted, watch } from "vue";
 
 const props = defineProps({
   shouldStartAutoPlay: {
@@ -25,6 +25,8 @@ const props = defineProps({
   },
 });
 const currentSubSlidesIndex = ref(0);
+const isAutoplayActive = ref(props.shouldStartAutoPlay);
+let intervalId = null;
 
 function nextSlide() {
   const isLastSlide = currentSubSlidesIndex.value === props.slides.length - 1;
@@ -48,17 +50,53 @@ function goToSlide(index) {
   currentSubSlidesIndex.value = index;
 }
 
-function autoPlay() {
-  setInterval(() => {
-    nextSlide();
+function startAutoPlay() {
+  stopAutoPlay();
+  intervalId = setInterval(() => {
+    if (isAutoplayActive.value) nextSlide();
   }, props.timeoutInMilliseconds);
 }
 
+function stopAutoPlay() {
+  if (intervalId) {
+    clearInterval(intervalId);
+    intervalId = null;
+  }
+}
+
+const pauseAutoPlay = () => {
+  console.log("pauseAutoPlay");
+  isAutoplayActive.value = false;
+};
+
+const resumeAutoPlay = () => {
+  console.log("resumeAutoPlay");
+  if (props.shouldStartAutoPlay) {
+    isAutoplayActive.value = true;
+  }
+};
+
 onMounted(() => {
   if (props.shouldStartAutoPlay) {
-    autoPlay();
+    startAutoPlay();
   }
 });
+
+onUnmounted(() => {
+  stopAutoPlay();
+});
+
+watch(
+  () => props.shouldStartAutoPlay,
+  (newVal) => {
+    isAutoplayActive.value = newVal;
+    if (newVal) {
+      startAutoPlay();
+    } else {
+      stopAutoPlay();
+    }
+  }
+);
 </script>
 
 <template>
@@ -79,7 +117,11 @@ onMounted(() => {
           />
         </div>
       </template>
-      <div :class="[$style.slides, $style['content__slides']]">
+      <div
+        :class="[$style.slides, $style['content__slides']]"
+        @mouseenter="pauseAutoPlay"
+        @mouseleave="resumeAutoPlay"
+      >
         <template v-for="(subSlides, index) in slides" :key="index">
           <template v-if="currentSubSlidesIndex === index">
             <template v-for="slide in subSlides" :key="slide.imagePath">
@@ -195,12 +237,37 @@ onMounted(() => {
   }
 }
 
+.slide:hover {
+  animation: box-move-animation 500ms 1 forwards;
+}
+.slide:not(:hover) {
+  animation: box-move 500ms 1 forwards;
+}
+@keyframes box-move {
+  0% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes box-move-animation {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.05);
+  }
+}
+
 .arrow_img {
   width: 20px;
   height: 38px;
 }
 
 .pagination {
+  margin-bottom: 30px;
   gap: 16px;
   display: flex;
   justify-content: center;

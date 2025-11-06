@@ -145,7 +145,7 @@ const currency = "PLN";
   }
 
   &__game-tile {
-    margin-bottom: 80px;
+    margin-bottom: 50px;
   }
 }
 </style>

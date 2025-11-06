@@ -130,6 +130,31 @@ function onClickAddToCart() {
   }
 }
 
+.game-tile:hover {
+  animation: box-move-animation 500ms 1 forwards;
+}
+.game-tile:not(:hover) {
+  animation: box-move 500ms 1 forwards;
+}
+
+@keyframes box-move {
+  0% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes box-move-animation {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.05);
+  }
+}
+
 .content {
   height: 250px;
   display: flex;
