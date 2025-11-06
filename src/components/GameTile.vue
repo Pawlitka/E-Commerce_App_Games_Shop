@@ -1,8 +1,7 @@
 <script setup>
-import { defineProps } from "vue";
+import { reactive, defineProps } from "vue";
 import CustomButton from "@/components/CustomButton.vue";
 
-// eslint-disable-next-line no-unused-vars
 const props = defineProps({
   tile: {
     type: Object,
@@ -16,6 +15,13 @@ const props = defineProps({
   },
 });
 
+const addToCartButton = reactive({
+  iconSource: require(`@/assets/GameTile/shopping-cart_white.png`),
+  iconAlternativeText: "shopping-cart_white.png",
+  label: "ADD TO CART",
+  disabled: false,
+});
+
 function isDiscount() {
   const discountInPercentage = props.tile?.discountInPercentage ?? 0;
   return discountInPercentage > 0;
@@ -23,17 +29,20 @@ function isDiscount() {
 
 function discountedPrice() {
   let discountInPercentage = Math.max(
-    Math.min(props.tile.discountInPercentage, 100),
+    Math.min(props.tile?.discountInPercentage, 100),
     1
   );
   return Math.max(
-    props.tile.price - (props.tile.price * discountInPercentage) / 100,
+    props.tile?.price - (props.tile?.price * discountInPercentage) / 100,
     0.01
   ).toFixed(2);
 }
 
-function onClickAddToCart() {
-  console.log("clickAddToCart!!!");
+function handleAddToCartButtonDisabled() {
+  addToCartButton.disabled = true;
+  addToCartButton.iconSource = require(`@/assets/GameTile/shopping-cart_after.png`);
+  addToCartButton.iconAlternativeText = "shopping-cart_after.png";
+  addToCartButton.label = "ADDED";
 }
 </script>
 
@@ -42,12 +51,12 @@ function onClickAddToCart() {
     <img
       :class="$style['game-tile__image']"
       :src="require(`@/assets/${tile.imagePath}`)"
-      :alt="tile.imagePath"
+      :alt="`Cover art for ${tile.title}`"
     />
     <div :class="[$style.content, $style['game-tile__content']]">
       <div :class="$style['content__title']">{{ tile.title }}</div>
       <div :class="$style['content__genres']">
-        <template v-for="genre in tile.genres" :key="genre">
+        <template v-for="genre in tile.genres" :key="genre.name">
           <div :class="$style['genres__genre']">
             {{ genre.name }}
           </div>
@@ -73,8 +82,8 @@ function onClickAddToCart() {
       <div :class="$style['cart__rate']">
         <div :class="$style['rate__stars']">
           <img
-            v-for="stars in tile.star"
-            :key="stars"
+            v-for="star in tile.star"
+            :key="star"
             :class="$style['stars__icon']"
             :src="require('@/assets/GameTile/star.png')"
             alt="Star icon"
@@ -85,11 +94,12 @@ function onClickAddToCart() {
         </span>
       </div>
       <CustomButton
-        :icon-source="require(`@/assets/GameTile/shopping-cart_white.png`)"
-        icon-alternative-text="shopping-cart_white.png"
-        label="ADD TO CART"
-        :class="$style['cart__button']"
-        @click="onClickAddToCart"
+        :disabled="addToCartButton.disabled"
+        :icon-source="addToCartButton.iconSource"
+        :icon-alternative-text="addToCartButton.iconAlternativeText"
+        :label="addToCartButton.label"
+        :class="[$style['cart__button']]"
+        @click="handleAddToCartButtonDisabled"
       ></CustomButton>
     </div>
   </div>
@@ -233,20 +243,6 @@ function onClickAddToCart() {
     height: 40px;
     margin: 10px 30px 0 0;
     padding: 5px;
-
-    &--icon {
-      object-fit: cover;
-      width: 30px;
-      height: 30px;
-      gap: 20px;
-    }
-
-    &--text {
-      font-size: 1rem;
-      margin: 5px 10px 5px 10px;
-      font-family: Inter, serif;
-      font-weight: bold;
-    }
   }
 }
 

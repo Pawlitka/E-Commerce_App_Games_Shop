@@ -13,6 +13,10 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 defineEmits({
@@ -20,18 +24,27 @@ defineEmits({
 });
 
 function showIcon() {
-  console.log("showicon?", props.iconSource || props.iconAlternativeText);
   return props.iconSource || props.iconAlternativeText;
 }
 
 function showLabel() {
   return props.label;
 }
+
+function isDisabled() {
+  return props.disabled;
+}
 </script>
 
 <template>
   <button
-    :class="[$style.button, $style['button--default']]"
+    v-if="isDisabled"
+    :disabled="isDisabled()"
+    :class="[
+      $style.button,
+      $style['button--default'],
+      { [$style['button--disabled']]: isDisabled() },
+    ]"
     type="button"
     @click="$emit('click')"
   >
@@ -83,20 +96,13 @@ function showLabel() {
 
   &--default:hover {
     background-color: rgba(0, 115, 229, 0.8);
+    cursor: pointer;
   }
 
-  &--icon {
-    object-fit: cover;
-    width: 30px;
-    height: 30px;
-    gap: 20px;
-  }
-
-  &--text {
-    font-size: 1rem;
-    margin: 5px 10px 5px 10px;
-    font-family: Inter, serif;
-    font-weight: bold;
+  &--disabled,
+  &--disabled:hover {
+    background-color: green;
+    cursor: default;
   }
 }
 </style>
