@@ -52,11 +52,13 @@ function handleNavigateToGamePage() {
 
 <template>
   <div :class="$style['game-tile']" @click="handleNavigateToGamePage">
-    <img
-      :class="$style['game-tile__image']"
-      :src="require(`@/assets/${tile.imagePath}`)"
-      :alt="`Cover art for ${tile.title}`"
-    />
+    <div :class="$style['game-tile__image-container']">
+      <img
+        :class="$style['game-tile__image']"
+        :src="require(`@/assets/${tile.imagePath}`)"
+        :alt="`Cover art for ${tile.title}`"
+      />
+    </div>
     <div :class="[$style.content, $style['game-tile__content']]">
       <div :class="$style['content__title']">{{ tile.title }}</div>
       <div :class="$style['content__genres']">
@@ -125,6 +127,30 @@ function handleNavigateToGamePage() {
 
   &:hover {
     cursor: pointer;
+  }
+
+  &__image-container {
+    position: relative;
+    max-width: 214px;
+    width: 100%;
+    height: 250px;
+
+    &::after {
+      content: "";
+      background-image: url("@/assets/GameTile/playstation-logotype.png");
+      background-size: 35px 35px;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: absolute;
+      z-index: 1;
+      top: 10px;
+      right: 10px;
+      width: 40px;
+      height: 40px;
+      background-color: rgb(245, 245, 245);
+      border: 1px solid black;
+      border-radius: 10px;
+    }
   }
 
   &__image {
