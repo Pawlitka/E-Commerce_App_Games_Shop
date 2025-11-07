@@ -101,7 +101,7 @@ function isDisabled() {
 
   &--disabled,
   &--disabled:hover {
-    background-color: green;
+    background-color: rgba(0, 138, 99, 1);
     cursor: default;
   }
 }

@@ -147,9 +147,8 @@ function handleNavigateToGamePage() {
   justify-content: center;
   width: 1200px;
   height: 250px;
-  border-radius: 5px;
+  border-radius: 20px;
   background-color: #f5f5f5;
-  border: 1px #f5f5f5 solid;
   transform: scale(1);
   transition: transform 200ms ease-in-out;
 
@@ -187,8 +186,8 @@ function handleNavigateToGamePage() {
     width: 100%;
     height: 250px;
     border-right: 2px black solid;
-    border-bottom-left-radius: 10px;
-    border-top-left-radius: 10px;
+    border-bottom-left-radius: 20px;
+    border-top-left-radius: 20px;
   }
 
   &__content {
@@ -234,7 +233,6 @@ function handleNavigateToGamePage() {
   }
 
   &__description {
-    display: table-column;
     position: relative;
     width: 700px;
     height: 100%;
@@ -242,8 +240,7 @@ function handleNavigateToGamePage() {
   }
 
   &__link {
-    justify-content: center;
-    align-items: center;
+    color: #0073e5;
   }
 }
 
@@ -279,7 +276,7 @@ function handleNavigateToGamePage() {
     &__after {
       font-size: 2rem;
       font-weight: bold;
-      color: green;
+      color: rgba(0, 138, 99, 1);
     }
   }
 
@@ -343,6 +340,7 @@ function handleNavigateToGamePage() {
     height: 30px;
     display: flex;
     background: #c2a875;
+    box-shadow: 0 4px 4px 0 rgba(194, 168, 117, 0.4);
     color: #f5f5f5;
     justify-content: center;
     align-items: center;
