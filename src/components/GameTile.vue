@@ -21,14 +21,22 @@ const platformIconStyle = computed(() => {
       const iconUrl = require(`@/assets/GameTile/${props.tile.platform}-logo.png`);
       return { "--platform-icon": `url(${iconUrl})` };
     } catch (e) {
-      console.error(
-        `Nie można załadować ikony dla platformy: ${props.tile.platform}`
-      );
+      console.error(`Cannot load icon for platform: ${props.tile.platform}`);
       return {};
     }
   }
   return {};
 });
+
+function truncateDescription(text, maxLength) {
+  if (text.length <= maxLength) return text;
+  let truncated = text.slice(0, maxLength);
+  const lastSpace = truncated.lastIndexOf(" ");
+  if (lastSpace > 0) {
+    truncated = truncated.slice(0, lastSpace);
+  }
+  return truncated + "...";
+}
 
 const addToCartButton = reactive({
   iconSource: require(`@/assets/GameTile/shopping-cart_white.png`),
@@ -89,7 +97,8 @@ function handleNavigateToGamePage() {
       </div>
 
       <div :class="$style['content__description']">
-        {{ tile.description }}
+        {{ truncateDescription(props.tile?.description, 250) }}
+        <a href="#" :class="$style['content__link']">Read more</a>
       </div>
     </div>
     <div :class="[$style.cart, $style['game-tile__cart']]">
@@ -178,6 +187,8 @@ function handleNavigateToGamePage() {
     width: 100%;
     height: 250px;
     border-right: 2px black solid;
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
   }
 
   &__content {
@@ -223,10 +234,16 @@ function handleNavigateToGamePage() {
   }
 
   &__description {
+    display: table-column;
+    position: relative;
     width: 700px;
-    display: flex;
     height: 100%;
     padding: 25px 45px 70px 10px;
+  }
+
+  &__link {
+    justify-content: center;
+    align-items: center;
   }
 }
 

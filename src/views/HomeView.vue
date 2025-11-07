@@ -94,10 +94,15 @@ const gameDetails = [
     reviews: 2137,
     star: 3,
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse\n" +
-      "        imperdiet aliquet urna, nec posuere dui efficitur in. Nam cursus dapibus\n" +
-      "        est, quis laoreet tellus viverra nec. Fusce nec libero enim. Vestibulum\n" +
-      "        non porttitor velit... Read more",
+      "Cyberpunk 2077 is an open-world, action-adventure RPG" +
+      " set in the dystopian metropolis of Night City, a place obsessed with power," +
+      ' glamour, and body modification. Players take on the role of "V" a mercenary' +
+      " outlaw whose life is upended after a heist goes wrong. V becomes entangled wit" +
+      "h a legendary rock star, Johnny Silverhand, whose digital ghost is now trapped inside" +
+      " V's mind via an experimental biochip. The main goal is to find a way to remove the" +
+      " chip and save V's life before it's overwritten, all while trying to build a legend in " +
+      "a world where corporate power is absolute and the line between human and machine " +
+      "is increasingly blurred.",
   },
 
   {
@@ -110,10 +115,10 @@ const gameDetails = [
     reviews: 100,
     star: 5,
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse\n" +
-      "        imperdiet aliquet urna, nec posuere dui efficitur in. Nam cursus dapibus\n" +
-      "        est, quis laoreet tellus viverra nec. Fusce nec libero enim. Vestibulum\n" +
-      "        non porttitor velit... Read more",
+      "Tomb Raider is a media franchise centered on the adventures of the archaeologist" +
+      " Lara Croft, featuring video games, films, and comics." +
+      " The franchise's video games are primarily action-adventure titles that involve" +
+      " exploration, puzzle-solving, and combat in dangerous environments.",
   },
 
   {
@@ -125,10 +130,13 @@ const gameDetails = [
     reviews: 10000,
     star: 4,
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse\n" +
-      "        imperdiet aliquet urna, nec posuere dui efficitur in. Nam cursus dapibus\n" +
-      "        est, quis laoreet tellus viverra nec. Fusce nec libero enim. Vestibulum\n" +
-      "        non porttitor velit... Read more",
+      "An open-world action role-playing game where you play as Geralt of Rivia," +
+      " a monster slayer for hire, searching for his adopted daughter Ciri who is being" +
+      " pursued by the Wild Hunt. The game is set in a vast, morally-grey fantasy world" +
+      " inspired by Slavic folklore, where players make choices with far-reaching consequences" +
+      ", engage in combat with monsters and humans using weapons and magic, and can explore" +
+      " a massive open world filled with quests and other activities like Gwent or horse" +
+      " racing",
   },
 ];
 
