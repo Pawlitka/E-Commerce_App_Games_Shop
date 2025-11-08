@@ -15,8 +15,8 @@ const props = defineProps({
 });
 
 const cartIcon = {
-  initial: require(`@/assets/icon/icon_shopping_cart.svg`),
-  added: require(`@/assets/icon/icon_add_shopping_cart.svg`),
+  initial: require(`@/assets/icon/icon_shopping-cart.svg`),
+  added: require(`@/assets/icon/icon_add-shopping-cart.svg`),
 };
 
 const addToCartButton = reactive({
@@ -120,7 +120,7 @@ function handleNavigateToGamePage() {
             v-for="star in tile.star"
             :key="star"
             :class="$style['stars__icon']"
-            :src="require('@/assets/icon/icon_rate_star.svg')"
+            :src="require('@/assets/icon/icon_rate-star.svg')"
             alt="Star icon"
           />
         </div>
