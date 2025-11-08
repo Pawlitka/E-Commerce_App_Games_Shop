@@ -19,42 +19,27 @@ const props = defineProps({
   },
 });
 
-defineEmits({
-  click: {},
-});
-
-function showIcon() {
-  return props.iconSource || props.iconAlternativeText;
-}
-
-function showLabel() {
-  return props.label;
-}
-
-function isDisabled() {
-  return props.disabled;
-}
+defineEmits(["click"]);
 </script>
 
 <template>
   <button
-    v-if="isDisabled"
-    :disabled="isDisabled()"
+    :disabled="disabled"
     :class="[
       $style.button,
       $style['button--default'],
-      { [$style['button--disabled']]: isDisabled() },
+      { [$style['button--disabled']]: disabled },
     ]"
     type="button"
     @click.stop="$emit('click')"
   >
     <img
-      v-if="showIcon()"
+      v-if="iconSource"
       :class="$style['button__icon']"
       :src="iconSource"
       :alt="iconAlternativeText"
     />
-    <span v-if="showLabel()" :class="$style['button__label']">{{ label }}</span>
+    <span v-if="label" :class="$style['button__label']">{{ props.label }}</span>
   </button>
 </template>
 
@@ -65,31 +50,21 @@ function isDisabled() {
   align-items: center;
   width: 100%;
   height: 40px;
-  margin: 0 20px 20px 0;
 
   &__icon {
     object-fit: cover;
     width: 30px;
     height: 30px;
-    gap: 20px;
   }
 
   &__label {
     font-size: 1rem;
-    margin: 5px 10px 5px 10px;
+    margin: 5px 10px;
     font-family: Inter, serif;
     font-weight: bold;
   }
 
   &--default {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    width: 200px;
-    height: 40px;
-    border: none;
-    border-radius: 10px;
     background-color: #0073e5;
     color: #f5f5f5;
   }
