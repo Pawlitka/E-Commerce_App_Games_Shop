@@ -6,7 +6,6 @@ const props = defineProps({
   tile: {
     type: Object,
     required: true,
-    default: () => null,
   },
   currency: {
     type: String,
