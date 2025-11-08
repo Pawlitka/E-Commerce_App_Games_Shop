@@ -1,3 +1,12 @@
+<script setup>
+import TopGamesCarousel from "@/components/TopGamesCarousel.vue";
+import GameTile from "@/components/GameTile.vue";
+import { carouselSlides } from "@/data/mockData/mockDataCarouselSlides";
+import { gameDetails } from "@/data/mockData/mockDataGameDetails";
+
+const currency = "PLN";
+</script>
+
 <template>
   <div :class="$style.home">
     <TopGamesCarousel
@@ -14,15 +23,6 @@
     </template>
   </div>
 </template>
-
-<script setup>
-import TopGamesCarousel from "@/components/TopGamesCarousel.vue";
-import GameTile from "@/components/GameTile.vue";
-import { carouselSlides } from "@/data/mockData/mockDataCarouselSlides";
-import { gameDetails } from "@/data/mockData/mockDataGameDetails";
-
-const currency = "PLN";
-</script>
 
 <style module lang="scss">
 .home {
