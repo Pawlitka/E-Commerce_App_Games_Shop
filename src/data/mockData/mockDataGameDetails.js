@@ -1,5 +1,6 @@
 export const gameDetails = [
   {
+    id: 1,
     genres: [
       { name: "Adventure" },
       { name: "RPG" },
@@ -25,6 +26,7 @@ export const gameDetails = [
   },
 
   {
+    id: 2,
     genres: [{ name: "Adventure" }, { name: "RRRR" }],
     platform: "playstation",
     imagePath: "TombRaider.jpg",
@@ -40,6 +42,7 @@ export const gameDetails = [
   },
 
   {
+    id: 3,
     genres: [{ name: "Adventure" }, { name: "Adult" }],
     platform: "playstation",
     imagePath: "Witcher_3.jpg",
