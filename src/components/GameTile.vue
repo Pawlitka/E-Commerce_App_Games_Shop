@@ -15,10 +15,22 @@ const props = defineProps({
   },
 });
 
+const cartIcon = {
+  initial: require(`@/assets/icon/icon_shopping_cart.svg`),
+  added: require(`@/assets/icon/icon_add_shopping_cart.svg`),
+};
+
+const addToCartButton = reactive({
+  iconSource: cartIcon.initial,
+  iconAlternativeText: "Icon that shows a shopping cart.",
+  label: "ADD TO CART",
+  disabled: false,
+});
+
 const platformIconStyle = computed(() => {
   if (props.tile?.platform) {
     try {
-      const iconUrl = require(`@/assets/GameTile/${props.tile.platform}-logo.png`);
+      const iconUrl = require(`@/assets/logo/logo_${props.tile.platform}.svg`);
       return { "--platform-icon": `url(${iconUrl})` };
     } catch (e) {
       console.error(`Cannot load icon for platform: ${props.tile.platform}`);
@@ -26,6 +38,19 @@ const platformIconStyle = computed(() => {
     }
   }
   return {};
+});
+
+const hasDiscount = computed(
+  () => (props?.tile?.discountInPercentage ?? 0) > 0
+);
+
+const discountedPrice = computed(() => {
+  if (!hasDiscount.value) return props.tile?.price.toFixed(2);
+
+  const discount = Math.max(Math.min(props.tile?.discountInPercentage, 100), 1);
+  const finalPrice = props.tile?.price - (props.tile?.price * discount) / 100;
+
+  return Math.max(finalPrice.toFixed(2), 0.01).toFixed(2);
 });
 
 function truncateDescription(text, maxLength) {
@@ -38,33 +63,10 @@ function truncateDescription(text, maxLength) {
   return truncated + "...";
 }
 
-const addToCartButton = reactive({
-  iconSource: require(`@/assets/GameTile/shopping-cart_white.png`),
-  iconAlternativeText: "shopping-cart_white.png",
-  label: "ADD TO CART",
-  disabled: false,
-});
-
-function isDiscount() {
-  const discountInPercentage = props.tile?.discountInPercentage ?? 0;
-  return discountInPercentage > 0;
-}
-
-function discountedPrice() {
-  let discountInPercentage = Math.max(
-    Math.min(props.tile?.discountInPercentage, 100),
-    1
-  );
-  return Math.max(
-    props.tile?.price - (props.tile?.price * discountInPercentage) / 100,
-    0.01
-  ).toFixed(2);
-}
-
-function handleAddToCartButtonDisabled() {
+function onAddToCartButtonClick() {
   addToCartButton.disabled = true;
-  addToCartButton.iconSource = require(`@/assets/GameTile/shopping-cart_after.png`);
-  addToCartButton.iconAlternativeText = "shopping-cart_after.png";
+  addToCartButton.iconSource = cartIcon.added;
+  addToCartButton.iconAlternativeText = "Icon that shows an added to cart ";
   addToCartButton.label = "ADDED";
 }
 
@@ -102,12 +104,12 @@ function handleNavigateToGamePage() {
       </div>
     </div>
     <div :class="[$style.cart, $style['game-tile__cart']]">
-      <div v-if="isDiscount() === true" :class="$style['cart__price']">
+      <div v-if="hasDiscount" :class="$style['cart__price']">
         <span :class="[$style['cart__price__before']]"
           >{{ currency }} {{ tile.price }}</span
         >
         <span :class="[$style['cart__price__after']]"
-          >{{ currency }} {{ discountedPrice() }}</span
+          >{{ currency }} {{ discountedPrice }}</span
         >
       </div>
       <div v-else :class="$style['cart__price']">
@@ -119,7 +121,7 @@ function handleNavigateToGamePage() {
             v-for="star in tile.star"
             :key="star"
             :class="$style['stars__icon']"
-            :src="require('@/assets/GameTile/star.png')"
+            :src="require('@/assets/icon/icon_rate_star.svg')"
             alt="Star icon"
           />
         </div>
@@ -133,7 +135,7 @@ function handleNavigateToGamePage() {
         :icon-alternative-text="addToCartButton.iconAlternativeText"
         :label="addToCartButton.label"
         :class="[$style['cart__button']]"
-        @click="handleAddToCartButtonDisabled"
+        @click="onAddToCartButtonClick"
       ></CustomButton>
     </div>
   </div>
@@ -304,12 +306,15 @@ function handleNavigateToGamePage() {
 
   &__button {
     display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    width: 200px;
     height: 40px;
-    margin: 10px 30px 0 0;
+    border: none;
+    border-radius: 10px;
     padding: 5px;
+    margin: 0 30px 10px 0;
   }
 }
 
