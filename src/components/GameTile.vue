@@ -2,10 +2,35 @@
 import { reactive, defineProps, computed } from "vue";
 import CustomButton from "@/components/CustomButton.vue";
 
+const cartIcon = {
+  initial: require(`@/assets/icon/icon_shopping-cart.svg`),
+  added: require(`@/assets/icon/icon_add-shopping-cart.svg`),
+};
+const MAX_DESCRIPTION_LENGTH = 250;
+
 const props = defineProps({
   tile: {
     type: Object,
     required: true,
+    default: () => ({
+      id: 1,
+      genres: [
+        {
+          name: "Adventure",
+        },
+        {
+          name: "RPG",
+        },
+      ],
+      platform: "apple",
+      imagePath: "Cyberpunk2077.jpg",
+      title: "CyberPunk 2077",
+      price: 159.99,
+      discountInPercentage: 0,
+      reviews: 2137,
+      star: 3,
+      description: "Lorem ipsum dolor sit amet",
+    }),
   },
   currency: {
     type: String,
@@ -13,11 +38,6 @@ const props = defineProps({
     required: true,
   },
 });
-
-const cartIcon = {
-  initial: require(`@/assets/icon/icon_shopping-cart.svg`),
-  added: require(`@/assets/icon/icon_add-shopping-cart.svg`),
-};
 
 const addToCartButton = reactive({
   iconSource: cartIcon.initial,
@@ -52,17 +72,7 @@ const discountedPrice = computed(() => {
   return Math.max(finalPrice.toFixed(2), 0.01).toFixed(2);
 });
 
-function truncateDescription(text, maxLength) {
-  if (text.length <= maxLength) return text;
-  let truncated = text.slice(0, maxLength);
-  const lastSpace = truncated.lastIndexOf(" ");
-  if (lastSpace > 0) {
-    truncated = truncated.slice(0, lastSpace);
-  }
-  return truncated + "...";
-}
-
-function onAddToCartButtonClick() {
+function handleAddToCartButtonClick() {
   addToCartButton.disabled = true;
   addToCartButton.iconSource = cartIcon.added;
   addToCartButton.iconAlternativeText = "Icon that shows an added to cart ";
@@ -71,6 +81,16 @@ function onAddToCartButtonClick() {
 
 function handleNavigateToGamePage() {
   console.log("Navigate to game page");
+}
+
+function truncateDescription(text, maxLength) {
+  if (text.length <= maxLength) return text;
+  let truncated = text.slice(0, maxLength);
+  const lastSpace = truncated.lastIndexOf(" ");
+  if (lastSpace > 0) {
+    truncated = truncated.slice(0, lastSpace);
+  }
+  return truncated + "...";
 }
 </script>
 
@@ -90,7 +110,7 @@ function handleNavigateToGamePage() {
     <div :class="[$style.content, $style['game-tile__content']]">
       <div :class="$style['content__title']">{{ tile.title }}</div>
       <div :class="$style['content__genres']">
-        <template v-for="genre in tile.genres" :key="genre.name">
+        <template v-for="genre in tile.genres" :key="genre.id">
           <div :class="$style['genres__genre']">
             {{ genre.name }}
           </div>
@@ -98,7 +118,9 @@ function handleNavigateToGamePage() {
       </div>
 
       <div :class="$style['content__description']">
-        {{ truncateDescription(props.tile?.description, 250) }}
+        {{
+          truncateDescription(props.tile?.description, MAX_DESCRIPTION_LENGTH)
+        }}
         <a href="#" :class="$style['content__link']">Read more</a>
       </div>
     </div>
@@ -117,8 +139,8 @@ function handleNavigateToGamePage() {
       <div :class="$style['cart__rate']">
         <div :class="$style['rate__stars']">
           <img
-            v-for="star in tile.star"
-            :key="star"
+            v-for="numberOfStars in tile.star"
+            :key="numberOfStars"
             :class="$style['stars__icon']"
             :src="require('@/assets/icon/icon_rate-star.svg')"
             alt="Star icon"
@@ -134,7 +156,7 @@ function handleNavigateToGamePage() {
         :icon-alternative-text="addToCartButton.iconAlternativeText"
         :label="addToCartButton.label"
         :class="[$style['cart__button']]"
-        @click="onAddToCartButtonClick"
+        @click="handleAddToCartButtonClick"
       ></CustomButton>
     </div>
   </div>
@@ -215,6 +237,7 @@ function handleNavigateToGamePage() {
   height: 250px;
   display: flex;
   padding-top: 10px;
+
   &__title {
     display: flex;
     padding: 5px 20px 0 20px;

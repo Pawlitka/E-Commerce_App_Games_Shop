@@ -68,7 +68,7 @@ defineEmits(["click"]);
     background-color: #0073e5;
     color: #f5f5f5;
 
-    :hover {
+    &:hover {
       background-color: rgba(0, 115, 229, 0.8);
       cursor: pointer;
     }
