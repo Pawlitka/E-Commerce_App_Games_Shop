@@ -16,9 +16,11 @@ const props = defineProps({
       id: 1,
       genres: [
         {
+          id: 1,
           name: "Adventure",
         },
         {
+          id: 2,
           name: "RPG",
         },
       ],
@@ -28,7 +30,7 @@ const props = defineProps({
       price: 159.99,
       discountInPercentage: 0,
       reviews: 2137,
-      star: 3,
+      numberOfStars: 3,
       description: "Lorem ipsum dolor sit amet",
     }),
   },
@@ -139,8 +141,8 @@ function truncateDescription(text, maxLength) {
       <div :class="$style['cart__rate']">
         <div :class="$style['rate__stars']">
           <img
-            v-for="numberOfStars in tile.star"
-            :key="numberOfStars"
+            v-for="star in tile.numberOfStars"
+            :key="star"
             :class="$style['stars__icon']"
             :src="require('@/assets/icon/icon_rate-star.svg')"
             alt="Star icon"
