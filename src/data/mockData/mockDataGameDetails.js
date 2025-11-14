@@ -2,10 +2,10 @@ export const gameDetails = [
   {
     id: 1,
     genres: [
-      { name: "Adventure" },
-      { name: "RPG" },
-      { name: "CO-OP" },
-      { name: "Horror" },
+      { id: 1, name: "Adventure" },
+      { id: 2, name: "RPG" },
+      { id: 3, name: "CO-OP" },
+      { id: 4, name: "Horror" },
     ],
     platform: "apple",
     imagePath: "Cyberpunk2077.jpg",
@@ -13,7 +13,7 @@ export const gameDetails = [
     price: 159.99,
     discountInPercentage: 0,
     reviews: 2137,
-    star: 3,
+    numberOfStars: 3,
     description: `Cyberpunk 2077 is an open-world, action-adventure RPG
        set in the dystopian metropolis of Night City, a place obsessed with power,
        glamour, and body modification. Players take on the role of "V" a mercenary
@@ -27,14 +27,17 @@ export const gameDetails = [
 
   {
     id: 2,
-    genres: [{ name: "Adventure" }, { name: "RRRR" }],
+    genres: [
+      { id: 1, name: "Adventure" },
+      { id: 2, name: "RRRR" },
+    ],
     platform: "playstation",
     imagePath: "TombRaider.jpg",
     title: "TombRaider",
     price: 99.99,
     discountInPercentage: 99.99,
     reviews: 100,
-    star: 5,
+    numberOfStars: 5,
     description: `Tomb Raider is a media franchise centered on the adventures of the archaeologist
       Lara Croft, featuring video games, films, and comics.
        The franchise's video games are primarily action-adventure titles that involve
@@ -43,13 +46,16 @@ export const gameDetails = [
 
   {
     id: 3,
-    genres: [{ name: "Adventure" }, { name: "Adult" }],
+    genres: [
+      { id: 1, name: "Adventure" },
+      { id: 2, name: "Adult" },
+    ],
     platform: "playstation",
     imagePath: "Witcher_3.jpg",
     title: "The Witcher 3",
     price: 59.99,
     reviews: 10000,
-    star: 4,
+    numberOfStars: 4,
     description: `
       An open-world action role-playing game where you play as Geralt of Rivia,
       a monster slayer for hire, searching for his adopted daughter Ciri who is being
