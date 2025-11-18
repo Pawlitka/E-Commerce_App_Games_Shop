@@ -24,9 +24,9 @@ const props = defineProps({
     required: true,
   },
 });
+
 const currentSubSlidesIndex = ref(0);
 const isAutoplayActive = ref(props.shouldStartAutoPlay);
-let intervalId = null;
 
 watch(
   () => props.shouldStartAutoPlay,
@@ -39,6 +39,8 @@ watch(
     }
   }
 );
+
+let intervalId = null;
 
 onMounted(() => {
   if (props.shouldStartAutoPlay) {
