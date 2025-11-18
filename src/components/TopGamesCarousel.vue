@@ -28,6 +28,28 @@ const currentSubSlidesIndex = ref(0);
 const isAutoplayActive = ref(props.shouldStartAutoPlay);
 let intervalId = null;
 
+watch(
+  () => props.shouldStartAutoPlay,
+  (newVal) => {
+    isAutoplayActive.value = newVal;
+    if (newVal) {
+      startAutoPlay();
+    } else {
+      stopAutoPlay();
+    }
+  }
+);
+
+onMounted(() => {
+  if (props.shouldStartAutoPlay) {
+    startAutoPlay();
+  }
+});
+
+onUnmounted(() => {
+  stopAutoPlay();
+});
+
 function nextSlide() {
   const isLastSlide = currentSubSlidesIndex.value === props.slides.length - 1;
   if (isLastSlide) {
@@ -65,38 +87,14 @@ function stopAutoPlay() {
 }
 
 const pauseAutoPlay = () => {
-  console.log("pauseAutoPlay");
   isAutoplayActive.value = false;
 };
 
 const resumeAutoPlay = () => {
-  console.log("resumeAutoPlay");
   if (props.shouldStartAutoPlay) {
     isAutoplayActive.value = true;
   }
 };
-
-onMounted(() => {
-  if (props.shouldStartAutoPlay) {
-    startAutoPlay();
-  }
-});
-
-onUnmounted(() => {
-  stopAutoPlay();
-});
-
-watch(
-  () => props.shouldStartAutoPlay,
-  (newVal) => {
-    isAutoplayActive.value = newVal;
-    if (newVal) {
-      startAutoPlay();
-    } else {
-      stopAutoPlay();
-    }
-  }
-);
 </script>
 
 <template>
