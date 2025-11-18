@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, defineProps, ref, onUnmounted, watch } from "vue";
+import { onMounted, defineProps, ref, onUnmounted, watch, computed } from "vue";
 
 const props = defineProps({
   shouldStartAutoPlay: {
@@ -20,13 +20,16 @@ const props = defineProps({
   },
   slides: {
     type: Array,
-    default: () => [],
     required: true,
   },
 });
 
 const currentSubSlidesIndex = ref(0);
 const isAutoplayActive = ref(props.shouldStartAutoPlay);
+
+const currentSlideGroup = computed(() => {
+  return props.slides[currentSubSlidesIndex.value] || [];
+});
 
 watch(
   () => props.shouldStartAutoPlay,
@@ -122,18 +125,14 @@ const resumeAutoPlay = () => {
         @mouseenter="pauseAutoPlay"
         @mouseleave="resumeAutoPlay"
       >
-        <template v-for="(subSlides, index) in slides" :key="index">
-          <template v-if="currentSubSlidesIndex === index">
-            <template v-for="slide in subSlides" :key="slide.imagePath">
-              <div :class="[$style.slide, $style['slides__slide']]">
-                <img
-                  :class="$style['slide__image']"
-                  :src="require(`@/assets/${slide.imagePath}`)"
-                  :alt="slide.alternativeText"
-                />
-              </div>
-            </template>
-          </template>
+        <template v-for="slide in currentSlideGroup" :key="slide.imagePath">
+          <div :class="[$style.slide, $style['slides__slide']]">
+            <img
+              :class="$style['slide__image']"
+              :src="require(`@/assets/${slide.imagePath}`)"
+              :alt="slide.alternativeText"
+            />
+          </div>
         </template>
       </div>
       <template v-if="showNavigation">
