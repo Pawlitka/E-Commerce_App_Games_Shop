@@ -4,11 +4,11 @@ import { onMounted, defineProps, ref, onUnmounted, watch, computed } from "vue";
 const props = defineProps({
   shouldStartAutoPlay: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   timeoutInMilliseconds: {
     type: Number,
-    default: 3000,
+    default: 5000,
   },
   showNavigation: {
     type: Boolean,
@@ -24,18 +24,19 @@ const props = defineProps({
   },
 });
 
-const currentSubSlidesIndex = ref(0);
+const currentSlidesIndex = ref(0);
 const isAutoplayActive = ref(props.shouldStartAutoPlay);
 
 const currentSlideGroup = computed(() => {
-  return props.slides[currentSubSlidesIndex.value] || [];
+  return props.slides[currentSlidesIndex.value] || [];
 });
+const totalSlides = computed(() => props.slides.length);
 
 watch(
   () => props.shouldStartAutoPlay,
-  (newVal) => {
-    isAutoplayActive.value = newVal;
-    if (newVal) {
+  (newValue) => {
+    isAutoplayActive.value = newValue;
+    if (newValue) {
       startAutoPlay();
     } else {
       stopAutoPlay();
@@ -43,51 +44,45 @@ watch(
   }
 );
 
-let intervalId = null;
+let autoplayIntervalId = null;
 
-onMounted(() => {
-  if (props.shouldStartAutoPlay) {
-    startAutoPlay();
-  }
-});
+onMounted(startAutoPlay);
 
-onUnmounted(() => {
-  stopAutoPlay();
-});
+onUnmounted(stopAutoPlay);
 
 function nextSlide() {
-  const isLastSlide = currentSubSlidesIndex.value === props.slides.length - 1;
-  if (isLastSlide) {
-    currentSubSlidesIndex.value = 0;
-  } else {
-    currentSubSlidesIndex.value += 1;
+  if (totalSlides.value > 0) {
+    currentSlidesIndex.value =
+      (currentSlidesIndex.value + 1) % totalSlides.value;
   }
 }
 
 function prevSlide() {
-  const isFirstSlide = currentSubSlidesIndex.value === 0;
-  if (isFirstSlide) {
-    currentSubSlidesIndex.value = props.slides.length - 1;
-  } else {
-    currentSubSlidesIndex.value -= 1;
+  if (totalSlides.value > 0) {
+    currentSlidesIndex.value =
+      (currentSlidesIndex.value + totalSlides.value - 1) % totalSlides.value;
   }
 }
 
 function goToSlide(index) {
-  currentSubSlidesIndex.value = index;
+  currentSlidesIndex.value = index;
 }
 
 function startAutoPlay() {
   stopAutoPlay();
-  intervalId = setInterval(() => {
-    if (isAutoplayActive.value) nextSlide();
-  }, props.timeoutInMilliseconds);
+  if (props.shouldStartAutoPlay) {
+    autoplayIntervalId = setInterval(() => {
+      if (isAutoplayActive.value) {
+        nextSlide();
+      }
+    }, props.timeoutInMilliseconds);
+  }
 }
 
 function stopAutoPlay() {
-  if (intervalId) {
-    clearInterval(intervalId);
-    intervalId = null;
+  if (autoplayIntervalId) {
+    clearInterval(autoplayIntervalId);
+    autoplayIntervalId = null;
   }
 }
 
@@ -156,13 +151,12 @@ const resumeAutoPlay = () => {
       :class="[$style.pagination, $style['carousel__pagination']]"
     >
       <span
-        v-for="(slideNumber, index) in slides.length"
-        :key="slideNumber"
+        v-for="index in slides"
+        :key="index"
         :class="[
           $style['pagination__dot'],
           {
-            [$style['pagination__dot--active']]:
-              index === currentSubSlidesIndex,
+            [$style['pagination__dot--active']]: index === currentSlidesIndex,
           },
         ]"
         @click="goToSlide(index)"
