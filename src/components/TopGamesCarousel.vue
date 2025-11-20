@@ -80,7 +80,7 @@ onMounted(() => {
       <div class="content__slides slides">
         <template v-for="(subSlides, index) in slides" :key="index">
           <template v-if="currentSubSlidesIndex === index">
-            <template v-for="slide in subSlides" :key="slide.imagePath">
+            <template v-for="slide in subSlides" :key="slide.id">
               <div class="slides__slide slide">
                 <img
                   class="slide__image"
