@@ -13,6 +13,11 @@ const showNavigation = ref(true);
       <span :class="$style['logo-container__title']">PURRSTORE</span>
     </div>
     <div :class="$style['header__search-bar']">
+      <input
+        :class="$style['search-bar__input']"
+        type="text"
+        placeholder="Search for game you wish..."
+      />
       <div :class="$style['search-bar__icon-container']">
         <img
           :class="$style['search-bar__icon']"
@@ -128,6 +133,24 @@ $search-bar-radius: 20px;
 }
 
 .search-bar {
+  &__input {
+    border: none;
+    width: 100%;
+    height: 100%;
+    background-color: #dbf0fa;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1rem;
+    font-family: "Jersey 25", sans-serif;
+    font-style: normal;
+    color: #000000;
+    padding-left: 20px;
+    border-bottom-left-radius: $search-bar-radius;
+    border-top-left-radius: $search-bar-radius;
+  }
+  &__input::placeholder {
+    color: #878787;
+  }
   &__icon-container {
     align-items: center;
     justify-content: center;
