@@ -14,13 +14,13 @@ const currency = "PLN";
       :class="$style['home__games-carousel']"
       :should-start-auto-play="true"
     />
-    <template v-for="gameDetail in gameDetails" :key="gameDetail.id">
-      <GameTile
-        :class="$style['home__game-tile']"
-        :tile="gameDetail"
-        :currency="currency"
-      />
-    </template>
+    <!--    <template v-for="gameDetail in gameDetails" :key="gameDetail.id">-->
+    <!--      <GameTile-->
+    <!--        :class="$style['home__game-tile']"-->
+    <!--        :tile="gameDetail"-->
+    <!--        :currency="currency"-->
+    <!--      />-->
+    <!--    </template>-->
   </div>
 </template>
 
