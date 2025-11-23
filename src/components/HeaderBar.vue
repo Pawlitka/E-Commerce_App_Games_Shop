@@ -12,6 +12,10 @@ const showNavigation = ref(true);
       />
       <span :class="$style['logo-container__title']">PURRSTORE</span>
     </div>
+    <div :class="$style['header__search-bar']"></div>
+    <div :class="$style['header__user']"></div>
+    <div :class="$style['header__wishlist']"></div>
+    <div :class="$style['header__cart']"></div>
   </div>
 </template>
 
@@ -25,8 +29,21 @@ const showNavigation = ref(true);
   background-color: #ffffff;
 
   &__logo-container {
+    justify-content: start;
     display: flex;
     align-items: center;
+  }
+
+  &__search-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 770px;
+    height: 40px;
+    fill: #dbf0fa;
+    border: #008ecc solid 1px;
+    margin-left: 25px;
+    margin-right: 20px;
   }
 }
 
