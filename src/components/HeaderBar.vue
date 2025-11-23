@@ -12,14 +12,31 @@ const showNavigation = ref(true);
       />
       <span :class="$style['logo-container__title']">PURRSTORE</span>
     </div>
-    <div :class="$style['header__search-bar']"></div>
-    <div :class="$style['header__user']"></div>
+    <div :class="$style['header__search-bar']">
+      <div :class="$style['search-bar__icon-container']">
+        <img
+          :class="$style['search-bar__icon']"
+          :src="require(`@/assets/icon/search_icon.svg`)"
+          alt="Search icon"
+        />
+      </div>
+    </div>
+    <div :class="$style['header__user']">
+      <img
+        :class="$style['user__icon']"
+        :src="require(`@/assets/icon/user_icon.svg`)"
+        alt="User icon"
+      />
+      <span :class="$style['user__text']">Log in</span>
+    </div>
     <div :class="$style['header__wishlist']"></div>
     <div :class="$style['header__cart']"></div>
   </div>
 </template>
 
 <style module lang="scss">
+$search-bar-radius: 20px;
+
 .header {
   display: flex;
   justify-content: center;
@@ -36,14 +53,15 @@ const showNavigation = ref(true);
 
   &__search-bar {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
     width: 770px;
     height: 40px;
-    fill: #dbf0fa;
+    background-color: #dbf0fa;
     border: #008ecc solid 1px;
     margin-left: 25px;
     margin-right: 20px;
+    border-radius: $search-bar-radius;
   }
 }
 
@@ -61,6 +79,24 @@ const showNavigation = ref(true);
     font-family: "Jersey 25", sans-serif;
     font-style: normal;
     color: #008ecc;
+  }
+}
+
+.search-bar {
+  &__icon-container {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    width: 50px;
+    height: 40px;
+    background-color: #008ecc;
+    border-bottom-right-radius: $search-bar-radius;
+    border-top-right-radius: $search-bar-radius;
+
+    &__icon {
+      width: 24px;
+      height: 24px;
+    }
   }
 }
 </style>
