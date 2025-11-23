@@ -27,9 +27,16 @@ const showNavigation = ref(true);
         :src="require(`@/assets/icon/user_icon.svg`)"
         alt="User icon"
       />
-      <span :class="$style['user__text']">Log in</span>
+      <span :class="$style['user__text']">Sign in</span>
     </div>
-    <div :class="$style['header__wishlist']"></div>
+    <div :class="$style['header__favourite']">
+      <img
+        :class="$style['favourite__icon']"
+        :src="require(`@/assets/icon/favourite_icon.svg`)"
+        alt="Favourite icon']"
+      />
+      <span :class="$style['favourite__text']">Favourite</span>
+    </div>
     <div :class="$style['header__cart']"></div>
   </div>
 </template>
@@ -68,9 +75,21 @@ $search-bar-radius: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 85px;
+    width: 100px;
     height: 50px;
     border-left: 1px solid #878787;
+    margin-right: 20px;
+    padding-left: 10px;
+  }
+
+  &__favourite {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 50px;
+    border-left: 1px solid #878787;
+    padding-left: 20px;
   }
 }
 
@@ -113,6 +132,20 @@ $search-bar-radius: 20px;
   &__icon {
     width: 30px;
     height: 30px;
+  }
+  &__text {
+    font-size: 1.2rem;
+    font-family: "Jersey 25", sans-serif;
+    font-style: normal;
+    color: #878787;
+  }
+}
+
+.favourite {
+  &__icon {
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
   }
   &__text {
     font-size: 1.2rem;
