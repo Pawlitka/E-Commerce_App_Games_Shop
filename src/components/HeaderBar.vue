@@ -37,7 +37,14 @@ const showNavigation = ref(true);
       />
       <span :class="$style['favourite__text']">Favourite</span>
     </div>
-    <div :class="$style['header__cart']"></div>
+    <div :class="$style['header__cart']">
+      <img
+        :class="$style['cart__icon']"
+        :src="require(`@/assets/icon/shopping-cart_icon_blue.svg`)"
+        alt="Favourite icon']"
+      />
+      <span :class="$style['cart__text']">Cart</span>
+    </div>
   </div>
 </template>
 
@@ -90,6 +97,16 @@ $search-bar-radius: 20px;
     height: 50px;
     border-left: 1px solid #878787;
     padding-left: 20px;
+    margin-right: 30px;
+  }
+
+  &__cart {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 50px;
+    border-left: 1px solid #878787;
   }
 }
 
@@ -143,8 +160,22 @@ $search-bar-radius: 20px;
 
 .favourite {
   &__icon {
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
+  }
+  &__text {
+    font-size: 1.2rem;
+    font-family: "Jersey 25", sans-serif;
+    font-style: normal;
+    color: #878787;
+  }
+}
+
+.cart {
+  &__icon {
+    width: 25px;
+    height: 25px;
     margin-right: 5px;
   }
   &__text {
