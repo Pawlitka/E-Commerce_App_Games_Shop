@@ -26,30 +26,30 @@ const showNavigation = ref(true);
         />
       </div>
     </div>
-    <div :class="$style['header__user']">
+    <button type="button" :class="$style['header__user']">
       <img
         :class="$style['user__icon']"
         :src="require(`@/assets/icon/user_icon.svg`)"
         alt="User icon"
       />
       <span :class="$style['user__text']">Sign in</span>
-    </div>
-    <div :class="$style['header__favourite']">
+    </button>
+    <button type="button" :class="$style['header__favourite']">
       <img
         :class="$style['favourite__icon']"
         :src="require(`@/assets/icon/favourite_icon.svg`)"
         alt="Favourite icon']"
       />
       <span :class="$style['favourite__text']">Favourite</span>
-    </div>
-    <div :class="$style['header__cart']">
+    </button>
+    <button type="button" :class="$style['header__cart']">
       <img
         :class="$style['cart__icon']"
         :src="require(`@/assets/icon/shopping-cart_icon_blue.svg`)"
         alt="Favourite icon']"
       />
       <span :class="$style['cart__text']">Cart</span>
-    </div>
+    </button>
   </div>
 </template>
 
@@ -89,9 +89,12 @@ $search-bar-radius: 20px;
     align-items: center;
     width: 100px;
     height: 50px;
+    border: none;
     border-left: 1px solid #878787;
+    background-color: #ffffff;
     margin-right: 20px;
     padding-left: 10px;
+    cursor: pointer;
   }
 
   &__favourite {
@@ -100,9 +103,12 @@ $search-bar-radius: 20px;
     align-items: center;
     width: 100px;
     height: 50px;
+    border: none;
     border-left: 1px solid #878787;
+    background-color: #ffffff;
     padding-left: 20px;
     margin-right: 30px;
+    cursor: pointer;
   }
 
   &__cart {
@@ -111,7 +117,10 @@ $search-bar-radius: 20px;
     align-items: center;
     width: 100px;
     height: 50px;
+    border: none;
+    background-color: #ffffff;
     border-left: 1px solid #878787;
+    cursor: pointer;
   }
 }
 

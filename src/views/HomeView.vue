@@ -35,6 +35,7 @@ const currency = "PLN";
   flex-direction: column;
 
   &__header-bar {
+    max-width: 1420px;
     position: sticky;
     top: 0;
     margin-bottom: 20px;
