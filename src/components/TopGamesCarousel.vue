@@ -151,8 +151,8 @@ const resumeAutoPlay = () => {
       :class="[$style.pagination, $style['carousel__pagination']]"
     >
       <span
-        v-for="index in slides"
-        :key="index"
+        v-for="(slide, index) in slides"
+        :key="slide"
         :class="[
           $style['pagination__dot'],
           {
@@ -239,8 +239,8 @@ const resumeAutoPlay = () => {
 }
 
 .arrow_img {
-  width: 20px;
-  height: 38px;
+  width: 25%;
+  height: 30%;
 }
 
 .pagination {
