@@ -63,6 +63,15 @@ $search-bar-radius: 20px;
     margin-right: 20px;
     border-radius: $search-bar-radius;
   }
+
+  &__user {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 85px;
+    height: 50px;
+    border-left: 1px solid #878787;
+  }
 }
 
 .logo-container {
@@ -97,6 +106,19 @@ $search-bar-radius: 20px;
       width: 24px;
       height: 24px;
     }
+  }
+}
+
+.user {
+  &__icon {
+    width: 30px;
+    height: 30px;
+  }
+  &__text {
+    font-size: 1.2rem;
+    font-family: "Jersey 25", sans-serif;
+    font-style: normal;
+    color: #878787;
   }
 }
 </style>
