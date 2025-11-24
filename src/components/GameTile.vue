@@ -170,7 +170,7 @@ function truncateDescription(text, maxLength) {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  width: 1200px;
+  width: 100%;
   height: 250px;
   border-radius: 20px;
   background-color: #f5f5f5;
@@ -219,7 +219,6 @@ function truncateDescription(text, maxLength) {
     width: 85%;
     height: 100%;
     flex-direction: column;
-    align-items: center;
   }
 
   &__cart {
@@ -238,11 +237,11 @@ function truncateDescription(text, maxLength) {
 .content {
   height: 250px;
   display: flex;
-  padding-top: 10px;
+  padding: 10px;
 
   &__title {
     display: flex;
-    padding: 5px 20px 0 20px;
+    justify-content: center;
     font-weight: bold;
     font-size: 2.5rem;
     font-family: Inter, serif;
@@ -252,7 +251,6 @@ function truncateDescription(text, maxLength) {
   &__genres {
     width: 100%;
     height: 33px;
-    padding: 10px 10px 20px 20px;
     gap: 10px;
     flex-direction: row;
     display: flex;
@@ -260,9 +258,8 @@ function truncateDescription(text, maxLength) {
 
   &__description {
     position: relative;
-    width: 700px;
+    text-align: left;
     height: 100%;
-    padding: 25px 45px 70px 10px;
   }
 
   &__link {
@@ -275,7 +272,7 @@ function truncateDescription(text, maxLength) {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 220px;
+  //width: 220px;
 
   &__price {
     display: flex;
@@ -333,7 +330,7 @@ function truncateDescription(text, maxLength) {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    width: 200px;
+    //width: 200px;
     height: 40px;
     border: none;
     border-radius: 10px;
@@ -365,9 +362,9 @@ function truncateDescription(text, maxLength) {
 
 .genres {
   &__genre {
-    width: 130px;
     height: 30px;
     display: flex;
+    padding: 0 5px;
     background: #c2a875;
     box-shadow: 0 4px 4px 0 rgba(194, 168, 117, 0.4);
     color: #f5f5f5;
