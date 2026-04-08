@@ -2,12 +2,20 @@
 import { ref } from "vue";
 const showSearchBar = ref(true);
 const focusSearchBar = ref(false);
+
+function handleSearchBarFocus() {
+  focusSearchBar.value = true;
+}
+
+function handleSearchBarBlur() {
+  focusSearchBar.value = false;
+}
 </script>
 
 <template>
   <div :class="$style['main-container']">
     <div
-      v-if="showSearchBar === true"
+      v-if="showSearchBar"
       :class="[
         $style['search-bar'],
         { [$style['search-bar--results-shown']]: focusSearchBar },
@@ -20,8 +28,8 @@ const focusSearchBar = ref(false);
         ]"
         type="text"
         placeholder="Search for game you wish..."
-        @focus="focusSearchBar = true"
-        @blur="focusSearchBar = false"
+        @focus="handleSearchBarFocus"
+        @blur="handleSearchBarBlur"
       />
       <button
         type="button"
