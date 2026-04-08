@@ -5,40 +5,95 @@ const focusSearchBar = ref(false);
 </script>
 
 <template>
-  <div
-    v-if="focusSearchBar === true"
-    :class="$style['search-bar__expanded']"
-  ></div>
-  <div v-if="showSearchBar === true" :class="$style['search-bar']">
-    <input
-      :class="$style['search-bar__input']"
-      type="text"
-      placeholder="Search for game you wish..."
-      @focus="focusSearchBar = true"
-      @blur="focusSearchBar = false"
-    />
-    <button type="button" :class="$style['search-bar__icon-container']">
-      <img
-        :class="$style['search-bar__icon']"
-        :src="require(`@/assets/icon/search_icon.svg`)"
-        alt="Search icon"
+  <div :class="$style['main-container']">
+    <div
+      v-if="showSearchBar === true"
+      :class="[
+        $style['search-bar'],
+        { [$style['search-bar--results-shown']]: focusSearchBar },
+      ]"
+    >
+      <input
+        :class="[
+          $style['search-bar__input'],
+          { [$style['search-bar__input--results-shown']]: focusSearchBar },
+        ]"
+        type="text"
+        placeholder="Search for game you wish..."
+        @focus="focusSearchBar = true"
+        @blur="focusSearchBar = false"
       />
-    </button>
+      <button
+        type="button"
+        :class="[
+          $style['search-bar__icon-container'],
+          {
+            [$style['search-bar__icon-container--results-shown']]:
+              focusSearchBar,
+          },
+        ]"
+      >
+        <img
+          :class="$style['search-bar__icon']"
+          :src="require(`@/assets/icon/search_icon.svg`)"
+          alt="Search icon"
+        />
+      </button>
+    </div>
+    <div :class="$style['container']">
+      <Transition name="fade">
+        <div
+          v-if="focusSearchBar"
+          :class="$style['search-bar__expanded']"
+        ></div>
+      </Transition>
+    </div>
   </div>
 </template>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+  max-height: 230px;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  max-height: 0;
+  opacity: 0;
+}
+</style>
 
 <style module lang="scss">
 $search-bar-radius: 20px;
 
-.search-bar__expanded {
+.main-container {
   display: flex;
-  min-height: 80%;
-  width: 78%;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  height: 0;
+}
+
+.search-bar__expanded {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-height: 30vh;
+  max-height: 60vh;
+  width: 100%;
   background-color: #ffffff;
   border: 1px solid #878787;
-  position: fixed;
   z-index: -1;
-  border-radius: $search-bar-radius;
+  border-bottom-left-radius: $search-bar-radius;
+  border-bottom-right-radius: $search-bar-radius;
 }
 
 .search-bar {
@@ -51,6 +106,11 @@ $search-bar-radius: 20px;
   background-color: #dbf0fa;
   border: #008ecc solid 1px;
   border-radius: $search-bar-radius;
+
+  &--results-shown {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
 
   &__input {
     border: none;
@@ -66,6 +126,10 @@ $search-bar-radius: 20px;
     padding-left: 20px;
     border-bottom-left-radius: $search-bar-radius;
     border-top-left-radius: $search-bar-radius;
+
+    &--results-shown {
+      border-bottom-left-radius: 0;
+    }
   }
 
   &__input::placeholder {
@@ -91,6 +155,10 @@ $search-bar-radius: 20px;
     &__icon {
       width: 24px;
       height: 24px;
+    }
+
+    &--results-shown {
+      border-bottom-right-radius: 0;
     }
   }
 }

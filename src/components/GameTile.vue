@@ -272,7 +272,7 @@ function truncateDescription(text, maxLength) {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  //width: 220px;
+  min-width: 200px;
 
   &__price {
     display: flex;
