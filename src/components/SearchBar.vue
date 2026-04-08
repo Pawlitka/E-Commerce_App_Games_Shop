@@ -2,12 +2,16 @@
 import { ref } from "vue";
 const showSearchBar = ref(true);
 const focusSearchBar = ref(false);
+const searchHistory = ref([]);
 
 function handleSearchBarFocus() {
+  if (searchHistory.value.length === 0) return;
+
   focusSearchBar.value = true;
 }
 
 function handleSearchBarBlur() {
+  if (searchHistory.value.length === 0) return;
   focusSearchBar.value = false;
 }
 </script>
