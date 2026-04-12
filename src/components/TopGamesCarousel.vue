@@ -109,7 +109,7 @@ const resumeAutoPlay = () => {
           @click="prevSlide"
         >
           <img
-            :class="[$style.arrow_img, $style['content__arrow-box--arrow-img']]"
+            :class="[$style.arrow_image]"
             :src="require(`@/assets/Carousel/arrow_white.png`)"
             alt="Previous slide arrow icon"
           />
@@ -139,7 +139,7 @@ const resumeAutoPlay = () => {
           @click="nextSlide"
         >
           <img
-            :class="[$style.arrow_img, $style['content__arrow-box--arrow-img']]"
+            :class="[$style.arrow_image]"
             :src="require(`@/assets/Carousel/arrow_white.png`)"
             alt="Next slide arrow icon"
           />
@@ -238,7 +238,7 @@ const resumeAutoPlay = () => {
   transition: transform 300ms ease-in-out;
 }
 
-.arrow_img {
+.arrow_image {
   width: 25%;
   height: 30%;
 }
