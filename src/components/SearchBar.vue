@@ -12,23 +12,24 @@ function handleSearchBarFocus() {
 
 function handleSearchBarBlur() {
   if (searchHistory.value.length === 0) return;
+
   focusSearchBar.value = false;
 }
 </script>
 
 <template>
-  <div :class="$style['main-container']">
+  <div :class="$style['container']">
     <div
       v-if="showSearchBar"
       :class="[
         $style['search-bar'],
-        { [$style['search-bar--results-shown']]: focusSearchBar },
+        { [$style['search-bar--open']]: focusSearchBar },
       ]"
     >
       <input
         :class="[
           $style['search-bar__input'],
-          { [$style['search-bar__input--results-shown']]: focusSearchBar },
+          { [$style['search-bar__input--open']]: focusSearchBar },
         ]"
         type="text"
         placeholder="Search for game you wish..."
@@ -40,8 +41,7 @@ function handleSearchBarBlur() {
         :class="[
           $style['search-bar__icon-container'],
           {
-            [$style['search-bar__icon-container--results-shown']]:
-              focusSearchBar,
+            [$style['search-bar__icon-container--open']]: focusSearchBar,
           },
         ]"
       >
@@ -52,12 +52,9 @@ function handleSearchBarBlur() {
         />
       </button>
     </div>
-    <div :class="$style['container']">
+    <div :class="$style['content']">
       <Transition name="fade">
-        <div
-          v-if="focusSearchBar"
-          :class="$style['search-bar__expanded']"
-        ></div>
+        <div v-if="focusSearchBar" :class="$style['content__expanded']"></div>
       </Transition>
     </div>
   </div>
@@ -80,7 +77,7 @@ function handleSearchBarBlur() {
 <style module lang="scss">
 $search-bar-radius: 20px;
 
-.main-container {
+.container {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -88,13 +85,13 @@ $search-bar-radius: 20px;
   height: 100%;
 }
 
-.container {
+.content {
   position: relative;
   width: 100%;
   height: 0;
 }
 
-.search-bar__expanded {
+.content__expanded {
   position: absolute;
   top: 0;
   left: 0;
@@ -119,7 +116,7 @@ $search-bar-radius: 20px;
   border: #008ecc solid 1px;
   border-radius: $search-bar-radius;
 
-  &--results-shown {
+  &--open {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
   }
@@ -165,8 +162,8 @@ $search-bar-radius: 20px;
     }
 
     &__icon {
-      width: 24px;
-      height: 24px;
+      width: 1.5rem;
+      height: 1.5rem;
     }
 
     &--results-shown {

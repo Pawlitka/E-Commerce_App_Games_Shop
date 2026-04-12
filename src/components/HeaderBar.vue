@@ -4,11 +4,11 @@ import SearchBar from "@/components/SearchBar.vue";
 const showNavigation = ref(true);
 </script>
 <template>
-  <div :class="$style['header-container']">
-    <div v-if="showNavigation === true" :class="$style['header']">
+  <div :class="$style['container']">
+    <div v-if="showNavigation" :class="$style['header']">
       <div :class="$style['header__logo-container']">
         <img
-          :class="$style['logo-container__logo-cat']"
+          :class="$style['logo-container__logo']"
           :src="require(`@/assets/logo/cat_logo_blue.svg`)"
           alt="Site logo"
         />
@@ -44,7 +44,7 @@ const showNavigation = ref(true);
 </template>
 
 <style module lang="scss">
-.header-container {
+.container {
   width: 100%;
   background-color: #ffffff;
   border-bottom: 1px solid #878787;
@@ -69,7 +69,7 @@ const showNavigation = ref(true);
 }
 
 .logo-container {
-  &__logo-cat {
+  &__logo {
     width: 70px;
     height: 60px;
   }

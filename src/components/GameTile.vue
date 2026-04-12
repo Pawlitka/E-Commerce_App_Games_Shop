@@ -330,7 +330,6 @@ function truncateDescription(text, maxLength) {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    //width: 200px;
     height: 40px;
     border: none;
     border-radius: 10px;
