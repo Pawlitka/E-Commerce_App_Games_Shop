@@ -5,6 +5,25 @@ import SearchBar from "@/components/SearchBar.vue";
 const showNavigation = ref(true);
 const isElementVisible = ref(false);
 const searchContainerRef = ref(null);
+const results = ref([]);
+const isLoading = ref(false);
+
+const handleSearch = async (query) => {
+  if (!query) {
+    results.value = [];
+    return;
+  }
+
+  isLoading.value = true;
+  try {
+    const res = await fetch(`https://games/title{query}`);
+    results.value = await res.json();
+  } catch (error) {
+    console.error("Błąd pobierania:", error);
+  } finally {
+    isLoading.value = false;
+  }
+};
 
 defineProps({
   isVisible: Boolean,
@@ -23,7 +42,15 @@ onClickOutside(searchContainerRef, () => {
       ref="searchContainerRef"
       :class="$style['header']"
     >
-      <div v-if="isVisible" :class="$style['search__wrapper--expanded']"></div>
+      <div
+        v-if="isVisible"
+        :class="$style['search__wrapper--expanded']"
+        @debouncedSearch="handleSearch"
+      >
+        <ul v-if="isLoading">
+          <li v-for="item in results" :key="item.id">{{ item.name }}</li>
+        </ul>
+      </div>
       <div :class="$style['header__logo-container']">
         <img
           :class="$style['logo-container__logo-cat']"
