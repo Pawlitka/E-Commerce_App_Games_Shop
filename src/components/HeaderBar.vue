@@ -96,6 +96,7 @@ onClickOutside(searchContainerRef, () => {
   gap: 10px;
   max-width: 1420px;
   width: 100%;
+  z-index: 100;
 
   &__logo-container {
     justify-content: start;
