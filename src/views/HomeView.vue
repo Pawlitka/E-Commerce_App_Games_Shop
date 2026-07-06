@@ -1,11 +1,10 @@
 <script setup>
 import TopGamesCarousel from "@/components/TopGamesCarousel.vue";
 import GameTile from "@/components/GameTile.vue";
-// import { gameDetails } from "@/data/mockData/mockDataGameDetails";
 import { carouselSlides } from "@/data/mockData/mockDataCarouselSlides";
 import WrapperView from "@/views/WrapperView.vue";
 import { onMounted, ref } from "vue";
-import { getGames } from "@/data/API";
+import { getGames } from "@/data/eCommerceAppGamesShopApi";
 const currency = "PLN";
 
 const games = ref([]);
@@ -16,12 +15,10 @@ const loadGames = async () => {
   try {
     loading.value = true;
     const response = await getGames.fetchGamesData();
-    console.log(response);
 
     games.value = response;
   } catch (err) {
     error.value = "Nie udało się pobrać gier.";
-    console.error(err);
   } finally {
     loading.value = false;
   }

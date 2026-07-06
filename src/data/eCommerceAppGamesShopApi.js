@@ -6,7 +6,6 @@ export const getGames = {
   async fetchGamesData() {
     const responses = (await axios.get(API_URL)).data;
     return responses.map((response) => {
-      console.log(response);
       return {
         id: response?.id ?? "",
         genres: response?.genres ?? [],

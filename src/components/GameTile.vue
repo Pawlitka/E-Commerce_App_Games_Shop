@@ -28,7 +28,7 @@ const props = defineProps({
         {
           id: 1,
           name: "apple",
-          logoPicture: require(`@/assets/logo/logo_linux.svg`),
+          logoPicture: require(`@/assets/logo/logo_apple.svg`),
         },
       ],
       imagePath: "Cyberpunk2077.jpg",
