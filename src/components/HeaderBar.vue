@@ -1,11 +1,26 @@
 <script setup>
 import { ref } from "vue";
+import { onClickOutside } from "@vueuse/core";
 import SearchBar from "@/components/SearchBar.vue";
 const showNavigation = ref(true);
+const isElementVisible = ref(false);
+const searchContainerRef = ref(null);
+
+onClickOutside(searchContainerRef, () => {
+  isElementVisible.value = false;
+});
 </script>
 <template>
   <div :class="$style['header-container']">
-    <div v-if="showNavigation === true" :class="$style['header']">
+    <div
+      ref="searchContainerRef"
+      v-if="showNavigation === true"
+      :class="$style['header']"
+    >
+      <div
+        v-if="isElementVisible"
+        :class="$style['search__wrapper--expanded']"
+      ></div>
       <div :class="$style['header__logo-container']">
         <img
           :class="$style['logo-container__logo-cat']"
@@ -14,7 +29,10 @@ const showNavigation = ref(true);
         />
         <span :class="$style['logo-container__title']">PURRSTORE</span>
       </div>
-      <SearchBar :show-search-bar="true" />
+      <SearchBar
+        :show-search-bar="true"
+        @update-visibility="isElementVisible = true"
+      />
       <button type="button" :class="$style.action">
         <img
           :class="$style['action__icon']"
@@ -51,6 +69,20 @@ const showNavigation = ref(true);
   height: 70px;
   display: flex;
   justify-content: center;
+}
+
+.search__wrapper--expanded {
+  position: absolute;
+  top: 0;
+  width: 75%;
+  height: 100%;
+  min-height: 600px;
+  max-height: 900px;
+  background-color: #ffffff;
+  display: flex;
+  z-index: -1;
+  border-radius: 20px;
+  border: 1px solid #878787;
 }
 
 .header {

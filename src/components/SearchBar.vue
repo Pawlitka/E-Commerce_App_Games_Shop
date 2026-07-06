@@ -1,18 +1,15 @@
 <script setup>
-import { ref } from "vue";
+import { ref, defineEmits } from "vue";
 const showSearchBar = ref(true);
 const focusSearchBar = ref(false);
-const searchHistory = ref([]);
+const emit = defineEmits(["updateVisibility"]);
+const emitFocus = (isVisible) => {
+  emit("updateVisibility", isVisible);
+};
 
 function handleSearchBarFocus() {
-  if (searchHistory.value.length === 0) return;
-
   focusSearchBar.value = true;
-}
-
-function handleSearchBarBlur() {
-  if (searchHistory.value.length === 0) return;
-  focusSearchBar.value = false;
+  emitFocus(true);
 }
 </script>
 
@@ -33,7 +30,6 @@ function handleSearchBarBlur() {
         type="text"
         placeholder="Search for game you wish..."
         @focus="handleSearchBarFocus"
-        @blur="handleSearchBarBlur"
       />
       <button
         type="button"
@@ -52,21 +48,13 @@ function handleSearchBarBlur() {
         />
       </button>
     </div>
-    <div :class="$style['container']">
-      <Transition name="fade">
-        <div
-          v-if="focusSearchBar"
-          :class="$style['search-bar__expanded']"
-        ></div>
-      </Transition>
-    </div>
   </div>
 </template>
 
 <style>
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s ease;
+  transition: opacity 0.1s ease;
   max-height: 230px;
 }
 
@@ -94,19 +82,19 @@ $search-bar-radius: 20px;
   height: 0;
 }
 
-.search-bar__expanded {
-  position: absolute;
-  top: 0;
-  left: 0;
-  min-height: 30vh;
-  max-height: 60vh;
-  width: 100%;
-  background-color: #ffffff;
-  border: 1px solid #878787;
-  z-index: -1;
-  border-bottom-left-radius: $search-bar-radius;
-  border-bottom-right-radius: $search-bar-radius;
-}
+//.search-bar__expanded {
+//  position: absolute;
+//  top: 0;
+//  width: 100%;
+//  min-height: 300px;
+//  max-height: 600px;
+//  background-color: #dbf0fa;
+//  border: 1px solid #878787;
+//  border-top: none;
+//  z-index: 0;
+//  border-bottom-left-radius: $search-bar-radius;
+//  border-bottom-right-radius: $search-bar-radius;
+//}
 
 .search-bar {
   display: flex;
@@ -119,12 +107,8 @@ $search-bar-radius: 20px;
   border: #008ecc solid 1px;
   border-radius: $search-bar-radius;
 
-  &--results-shown {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-
   &__input {
+    outline: none;
     border: none;
     width: 100%;
     height: 100%;
@@ -138,10 +122,6 @@ $search-bar-radius: 20px;
     padding-left: 20px;
     border-bottom-left-radius: $search-bar-radius;
     border-top-left-radius: $search-bar-radius;
-
-    &--results-shown {
-      border-bottom-left-radius: 0;
-    }
   }
 
   &__input::placeholder {
@@ -167,10 +147,6 @@ $search-bar-radius: 20px;
     &__icon {
       width: 24px;
       height: 24px;
-    }
-
-    &--results-shown {
-      border-bottom-right-radius: 0;
     }
   }
 }
