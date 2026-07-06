@@ -22,19 +22,18 @@ defineProps({
 </script>
 
 <template>
-  <div :class="$style['main-container']">
+  <div :class="$style['container']">
     <div
       v-if="showSearchBar"
       :class="[
         $style['search-bar'],
-        { [$style['search-bar--results-shown']]: isVisible },
+        { [$style['search-bar--open']]: isVisible },
       ]"
     >
       <input
         v-model="searchQuery"
         :class="[
-          $style['search-bar__input'],
-          { [$style['search-bar__input--results-shown']]: focusSearchBar },
+          { [$style['search-bar__input--open']]: focusSearchBar },
         ]"
         type="text"
         placeholder="Search for game you wish..."
@@ -45,8 +44,7 @@ defineProps({
         :class="[
           $style['search-bar__icon-container'],
           {
-            [$style['search-bar__icon-container--results-shown']]:
-              focusSearchBar,
+            [$style['search-bar__icon-container--open']]: focusSearchBar,
           },
         ]"
       >
@@ -77,7 +75,7 @@ defineProps({
 <style module lang="scss">
 $search-bar-radius: 20px;
 
-.main-container {
+.container {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -85,25 +83,12 @@ $search-bar-radius: 20px;
   height: 100%;
 }
 
-.container {
+.content {
   position: relative;
   width: 100%;
   height: 0;
 }
 
-//.search-bar__expanded {
-//  position: absolute;
-//  top: 0;
-//  width: 100%;
-//  min-height: 300px;
-//  max-height: 600px;
-//  background-color: #dbf0fa;
-//  border: 1px solid #878787;
-//  border-top: none;
-//  z-index: 0;
-//  border-bottom-left-radius: $search-bar-radius;
-//  border-bottom-right-radius: $search-bar-radius;
-//}
 
 .search-bar {
   display: flex;
@@ -154,8 +139,8 @@ $search-bar-radius: 20px;
     }
 
     &__icon {
-      width: 24px;
-      height: 24px;
+      width: 1.5rem;
+      height: 1.5rem;
     }
   }
 }

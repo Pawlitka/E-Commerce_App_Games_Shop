@@ -1,10 +1,10 @@
 <script setup>
-import { onMounted, defineProps, ref } from "vue";
+import { onMounted, defineProps, ref, onUnmounted, watch, computed } from "vue";
 
 const props = defineProps({
   shouldStartAutoPlay: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   timeoutInMilliseconds: {
     type: Number,
@@ -20,97 +20,145 @@ const props = defineProps({
   },
   slides: {
     type: Array,
-    default: () => [],
     required: true,
   },
 });
 
-const currentSubSlidesIndex = ref(0);
+const currentSlidesIndex = ref(0);
+const isAutoplayActive = ref(props.shouldStartAutoPlay);
+
+const currentSlideGroup = computed(() => {
+  return props.slides[currentSlidesIndex.value] || [];
+});
+const totalSlides = computed(() => props.slides.length);
+
+watch(
+  () => props.shouldStartAutoPlay,
+  (newValue) => {
+    isAutoplayActive.value = newValue;
+    if (newValue) {
+      startAutoPlay();
+    } else {
+      stopAutoPlay();
+    }
+  }
+);
+
+let autoplayIntervalId = null;
+
+onMounted(startAutoPlay);
+
+onUnmounted(stopAutoPlay);
 
 function nextSlide() {
-  const isLastSlide = currentSubSlidesIndex.value === props.slides.length - 1;
-  if (isLastSlide) {
-    currentSubSlidesIndex.value = 0;
-  } else {
-    currentSubSlidesIndex.value += 1;
+  if (totalSlides.value > 0) {
+    currentSlidesIndex.value =
+      (currentSlidesIndex.value + 1) % totalSlides.value;
   }
 }
 
 function prevSlide() {
-  const isFirstSlide = currentSubSlidesIndex.value === 0;
-  if (isFirstSlide) {
-    currentSubSlidesIndex.value = props.slides.length - 1;
-  } else {
-    currentSubSlidesIndex.value -= 1;
+  if (totalSlides.value > 0) {
+    currentSlidesIndex.value =
+      (currentSlidesIndex.value + totalSlides.value - 1) % totalSlides.value;
   }
 }
 
 function goToSlide(index) {
-  currentSubSlidesIndex.value = index;
+  currentSlidesIndex.value = index;
 }
 
-function autoPlay() {
-  setInterval(() => {
-    nextSlide();
-  }, props.timeoutInMilliseconds);
-}
-
-onMounted(() => {
+function startAutoPlay() {
+  stopAutoPlay();
   if (props.shouldStartAutoPlay) {
-    autoPlay();
+    autoplayIntervalId = setInterval(() => {
+      if (isAutoplayActive.value) {
+        nextSlide();
+      }
+    }, props.timeoutInMilliseconds);
   }
-});
+}
+
+function stopAutoPlay() {
+  if (autoplayIntervalId) {
+    clearInterval(autoplayIntervalId);
+    autoplayIntervalId = null;
+  }
+}
+
+const pauseAutoPlay = () => {
+  isAutoplayActive.value = false;
+};
+
+const resumeAutoPlay = () => {
+  if (props.shouldStartAutoPlay) {
+    isAutoplayActive.value = true;
+  }
+};
 </script>
 
 <template>
-  <div class="carousel">
-    <div class="carousel__content content">
+  <div :class="$style.carousel">
+    <div :class="[$style.content, $style['carousel__content']]">
       <template v-if="showNavigation">
         <div
-          class="content__arrow-box content__arrow-box--left"
+          :class="[
+            $style['content__arrow-box'],
+            $style['content__arrow-box--left'],
+          ]"
           @click="prevSlide"
         >
           <img
-            class="arrow-img"
+            :class="[$style.arrow_image]"
             :src="require(`@/assets/Carousel/arrow_white.png`)"
             alt="Previous slide arrow icon"
           />
         </div>
       </template>
-      <div class="content__slides slides">
-        <template v-for="(subSlides, index) in slides" :key="index">
-          <template v-if="currentSubSlidesIndex === index">
-            <template v-for="slide in subSlides" :key="slide.id">
-              <div class="slides__slide slide">
-                <img
-                  class="slide__image"
-                  :src="require(`@/assets/${slide.imagePath}`)"
-                  :alt="slide.alternativeText"
-                />
-              </div>
-            </template>
-          </template>
+      <div
+        :class="[$style.slides, $style['content__slides']]"
+        @mouseenter="pauseAutoPlay"
+        @mouseleave="resumeAutoPlay"
+      >
+        <template v-for="slide in currentSlideGroup" :key="slide.imagePath">
+          <div :class="[$style.slide, $style['slides__slide']]">
+            <img
+              :class="$style['slide__image']"
+              :src="require(`@/assets/${slide.imagePath}`)"
+              :alt="slide.alternativeText"
+            />
+          </div>
         </template>
       </div>
       <template v-if="showNavigation">
         <div
-          class="content__arrow-box content__arrow-box--right"
+          :class="[
+            $style['content__arrow-box'],
+            $style['content__arrow-box--right'],
+          ]"
           @click="nextSlide"
         >
           <img
-            class="arrow-img"
+            :class="[$style.arrow_image]"
             :src="require(`@/assets/Carousel/arrow_white.png`)"
             alt="Next slide arrow icon"
           />
         </div>
       </template>
     </div>
-    <div v-if="showPagination" class="carousel__pagination pagination">
+    <div
+      v-if="showPagination"
+      :class="[$style.pagination, $style['carousel__pagination']]"
+    >
       <span
-        v-for="(slideNumber, index) in slides.length"
-        :key="slideNumber"
-        class="pagination__dot"
-        :class="{ 'pagination__dot--active': index === currentSubSlidesIndex }"
+        v-for="(slide, index) in slides"
+        :key="slide"
+        :class="[
+          $style['pagination__dot'],
+          {
+            [$style['pagination__dot--active']]: index === currentSlidesIndex,
+          },
+        ]"
         @click="goToSlide(index)"
       >
       </span>
@@ -118,22 +166,14 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style module lang="scss">
 .carousel {
   display: flex;
   flex-direction: column;
-
-  &__pagination {
-    width: 100%;
-  }
-
-  &__content {
-    width: 100%;
-    height: 100%;
-  }
 }
 
 .content {
+  position: relative;
   display: flex;
   align-items: center;
 
@@ -181,7 +221,11 @@ onMounted(() => {
 }
 
 .slide {
+  transform: scale(1);
+  transition: transform 200ms ease-in-out;
+
   &__image {
+    object-fit: cover;
     width: 230px;
     height: 330px;
     border-radius: 12px;
@@ -189,12 +233,18 @@ onMounted(() => {
   }
 }
 
-.arrow-img {
-  width: 20px;
-  height: 38px;
+.slide:hover {
+  transform: scale(1.05);
+  transition: transform 300ms ease-in-out;
+}
+
+.arrow_image {
+  width: 25%;
+  height: 30%;
 }
 
 .pagination {
+  margin-bottom: 30px;
   gap: 16px;
   display: flex;
   justify-content: center;

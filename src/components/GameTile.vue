@@ -24,7 +24,13 @@ const props = defineProps({
           name: "RPG",
         },
       ],
-      platform: "apple",
+      platform: [
+        {
+          id: 1,
+          name: "apple",
+          logoPicture: require(`@/assets/logo/logo_apple.svg`),
+        },
+      ],
       imagePath: "Cyberpunk2077.jpg",
       title: "CyberPunk 2077",
       price: 159.99,
@@ -49,14 +55,11 @@ const addToCartButton = reactive({
 });
 
 const platformIconStyle = computed(() => {
-  if (props.tile?.platform) {
-    try {
-      const iconUrl = require(`@/assets/logo/logo_${props.tile.platform}.svg`);
-      return { "--platform-icon": `url(${iconUrl})` };
-    } catch (e) {
-      console.error(`Cannot load icon for platform: ${props.tile.platform}`);
-      return {};
-    }
+  const logoBase64 = props.tile?.platform?.logoPicture;
+
+  if (logoBase64) {
+    const iconUrl = `url('data:image/svg+xml;base64,${logoBase64}')`;
+    return { "--platform-icon": iconUrl };
   }
   return {};
 });
@@ -104,8 +107,9 @@ function truncateDescription(text, maxLength) {
   >
     <div :class="$style['game-tile__image-container']">
       <img
+        v-if="tile.imagePath"
         :class="$style['game-tile__image']"
-        :src="require(`@/assets/${tile.imagePath}`)"
+        :src="'data:image/jpeg;base64,' + tile.imagePath"
         :alt="`Cover art for ${tile.title}`"
       />
     </div>
@@ -330,7 +334,6 @@ function truncateDescription(text, maxLength) {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    //width: 200px;
     height: 40px;
     border: none;
     border-radius: 10px;

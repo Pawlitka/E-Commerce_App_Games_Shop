@@ -53,7 +53,7 @@ onClickOutside(searchContainerRef, () => {
       </div>
       <div :class="$style['header__logo-container']">
         <img
-          :class="$style['logo-container__logo-cat']"
+          :class="$style['logo-container__logo']"
           :src="require(`@/assets/logo/cat_logo_blue.svg`)"
           alt="Site logo"
         />
@@ -93,7 +93,7 @@ onClickOutside(searchContainerRef, () => {
 </template>
 
 <style module lang="scss">
-.header-container {
+.container {
   width: 100%;
   background-color: #ffffff;
   border-bottom: 1px solid #878787;
@@ -133,7 +133,7 @@ onClickOutside(searchContainerRef, () => {
 }
 
 .logo-container {
-  &__logo-cat {
+  &__logo {
     width: 70px;
     height: 60px;
   }
