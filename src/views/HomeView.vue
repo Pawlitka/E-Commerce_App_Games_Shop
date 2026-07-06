@@ -4,13 +4,18 @@ import GameTile from "@/components/GameTile.vue";
 import { carouselSlides } from "@/data/mockData/mockDataCarouselSlides";
 import { gameDetails } from "@/data/mockData/mockDataGameDetails";
 import WrapperView from "@/views/WrapperView.vue";
+import { ref } from "vue";
 
+const isElementVisible = ref(false);
 const currency = "PLN";
 </script>
 
 <template>
-  <WrapperView>
-    <div :class="$style.home">
+  <WrapperView
+    :is-visible="isElementVisible"
+    @update:is-visible="(val) => (isElementVisible = val)"
+  >
+    <div :class="[{ [$style['blur__container']]: isBlured }, $style['home']]">
       <TopGamesCarousel
         :slides="carouselSlides"
         :class="$style['home__games-carousel']"
@@ -42,5 +47,8 @@ const currency = "PLN";
   &__game-tile {
     margin-bottom: 50px;
   }
+}
+.blur__container {
+  background-color: #878787;
 }
 </style>

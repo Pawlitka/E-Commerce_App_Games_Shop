@@ -1,16 +1,12 @@
 <script setup>
-import { ref, defineEmits } from "vue";
+import { ref, defineEmits, defineProps } from "vue";
 const showSearchBar = ref(true);
 const focusSearchBar = ref(false);
-const emit = defineEmits(["updateVisibility"]);
-const emitFocus = (isVisible) => {
-  emit("updateVisibility", isVisible);
-};
+const emit = defineEmits(["focus"]);
 
-function handleSearchBarFocus() {
-  focusSearchBar.value = true;
-  emitFocus(true);
-}
+defineProps({
+  isVisible: Boolean,
+});
 </script>
 
 <template>
@@ -19,7 +15,7 @@ function handleSearchBarFocus() {
       v-if="showSearchBar"
       :class="[
         $style['search-bar'],
-        { [$style['search-bar--results-shown']]: focusSearchBar },
+        { [$style['search-bar--results-shown']]: isVisible },
       ]"
     >
       <input
@@ -29,7 +25,7 @@ function handleSearchBarFocus() {
         ]"
         type="text"
         placeholder="Search for game you wish..."
-        @focus="handleSearchBarFocus"
+        @focus="emit('focus')"
       />
       <button
         type="button"

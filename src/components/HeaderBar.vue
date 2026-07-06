@@ -1,26 +1,29 @@
 <script setup>
-import { ref } from "vue";
+import { ref, defineProps, defineEmits } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import SearchBar from "@/components/SearchBar.vue";
 const showNavigation = ref(true);
 const isElementVisible = ref(false);
 const searchContainerRef = ref(null);
 
+defineProps({
+  isVisible: Boolean,
+});
+const emit = defineEmits(["update:isVisible"]);
+
 onClickOutside(searchContainerRef, () => {
   isElementVisible.value = false;
+  emit("update:isVisible", false);
 });
 </script>
 <template>
   <div :class="$style['header-container']">
     <div
-      ref="searchContainerRef"
       v-if="showNavigation === true"
+      ref="searchContainerRef"
       :class="$style['header']"
     >
-      <div
-        v-if="isElementVisible"
-        :class="$style['search__wrapper--expanded']"
-      ></div>
+      <div v-if="isVisible" :class="$style['search__wrapper--expanded']"></div>
       <div :class="$style['header__logo-container']">
         <img
           :class="$style['logo-container__logo-cat']"
@@ -32,6 +35,7 @@ onClickOutside(searchContainerRef, () => {
       <SearchBar
         :show-search-bar="true"
         @update-visibility="isElementVisible = true"
+        @focus="emit('update:isVisible', true)"
       />
       <button type="button" :class="$style.action">
         <img

@@ -1,10 +1,20 @@
 <script setup>
 import HeaderBar from "@/components/HeaderBar.vue";
+import { defineProps, defineEmits } from "vue";
+defineProps({
+  isVisible: Boolean,
+});
+const emit = defineEmits(["update:isVisible"]);
 </script>
 
 <template>
   <div :class="$style.wrapper">
-    <HeaderBar :class="$style['wrapper__header-bar']" :show-navigation="true" />
+    <HeaderBar
+      :class="$style['wrapper__header-bar']"
+      :show-navigation="true"
+      :is-visible="isVisible"
+      @update:is-visible="(val) => emit('update:isVisible', val)"
+    />
     <div :class="$style['wrapper__content']"><slot></slot></div>
   </div>
 </template>
