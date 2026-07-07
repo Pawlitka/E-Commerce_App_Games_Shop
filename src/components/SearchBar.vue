@@ -32,9 +32,7 @@ defineProps({
     >
       <input
         v-model="searchQuery"
-        :class="[
-          { [$style['search-bar__input--open']]: focusSearchBar },
-        ]"
+        :class="$style['search-bar__input']"
         type="text"
         placeholder="Search for game you wish..."
         @focus="emit('focus')"
@@ -76,6 +74,7 @@ defineProps({
 $search-bar-radius: 20px;
 
 .container {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -86,13 +85,11 @@ $search-bar-radius: 20px;
 .content {
   position: relative;
   width: 100%;
-  height: 0;
 }
-
 
 .search-bar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
   min-width: 260px;
   width: 100%;

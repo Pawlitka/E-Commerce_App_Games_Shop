@@ -16,7 +16,14 @@ const handleSearch = async (query) => {
 
   isLoading.value = true;
   try {
-    const res = await fetch(`https://games/title{query}`);
+    const res = await fetch(
+      `http://localhost:8080/games/search?title=${encodeURIComponent(query)}`
+    );
+
+    if (!res.ok) {
+      throw new Error(`Serwer odpowiedział statusem: ${res.status}`);
+    }
+
     results.value = await res.json();
   } catch (error) {
     console.error("Błąd pobierania:", error);
@@ -36,20 +43,28 @@ onClickOutside(searchContainerRef, () => {
 });
 </script>
 <template>
-  <div :class="$style['header-container']">
+  <div :class="$style['container']">
     <div
       v-if="showNavigation === true"
       ref="searchContainerRef"
       :class="$style['header']"
     >
-      <div
-        v-if="isVisible"
-        :class="$style['search__wrapper--expanded']"
-        @debouncedSearch="handleSearch"
-      >
-        <ul v-if="isLoading">
-          <li v-for="item in results" :key="item.id">{{ item.name }}</li>
+      <div v-if="isVisible" :class="$style['search__wrapper--expanded']">
+        <ul :class="$style['list__categories']">
+          <li :class="$style['list__categories__item']">Trending</li>
+          <li :class="$style['list__categories__item']">By Genre</li>
+          <li :class="$style['list__categories__item']">By Name</li>
         </ul>
+        <div :class="$style['wrapper']">
+          <div v-if="!isLoading && results.length > 0" :class="$style['list']">
+            <template v-for="item in results" :key="item.id">
+              <div :class="$style['list__item']">
+                {{ item.title }}
+              </div>
+            </template>
+          </div>
+          <div v-else :class="$style['list__item--loading']">Ładowanie...</div>
+        </div>
       </div>
       <div :class="$style['header__logo-container']">
         <img
@@ -60,8 +75,8 @@ onClickOutside(searchContainerRef, () => {
         <span :class="$style['logo-container__title']">PURRSTORE</span>
       </div>
       <SearchBar
-        :show-search-bar="true"
-        @update-visibility="isElementVisible = true"
+        :is-visible="isVisible"
+        @debouncedSearch="handleSearch"
         @focus="emit('update:isVisible', true)"
       />
       <button type="button" :class="$style.action">
@@ -103,9 +118,8 @@ onClickOutside(searchContainerRef, () => {
 }
 
 .search__wrapper--expanded {
-  position: absolute;
   top: 0;
-  width: 75%;
+  width: 85%;
   height: 100%;
   min-height: 600px;
   max-height: 900px;
@@ -114,6 +128,7 @@ onClickOutside(searchContainerRef, () => {
   z-index: -1;
   border-radius: 20px;
   border: 1px solid #878787;
+  position: absolute;
 }
 
 .header {
@@ -175,6 +190,89 @@ onClickOutside(searchContainerRef, () => {
 
   &:hover {
     color: #515151;
+  }
+}
+.wrapper {
+  flex-direction: column;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  margin-top: 80px;
+}
+
+.list__categories {
+  display: flex;
+  flex-direction: column;
+  width: 15%;
+  height: 100%;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  margin-top: 80px;
+  margin-left: 20px;
+
+  &__item {
+    width: 100%;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    color: #878787;
+    font-family: "Jersey 25", sans-serif;
+    font-style: normal;
+    border-radius: 20px;
+
+    &:hover {
+      background: #2d94c1;
+      color: #ffffff;
+    }
+  }
+}
+
+.list {
+  width: 100%;
+  height: 85px;
+  flex-direction: column;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  color: black;
+  font-size: 1rem;
+  font-family: "Jersey 25", sans-serif;
+  font-style: normal;
+  gap: 5px;
+
+  &__item {
+    margin-left: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.5rem;
+    width: 90%;
+    height: 80px;
+    border-radius: 20px;
+    padding-left: 30px;
+
+    &:hover {
+      background: #dbf0fa;
+    }
+  }
+}
+
+.list__item--loading {
+  &--loading {
+    margin-top: 4px;
+    margin-left: 10px;
+    display: flex;
+    justify-content: flex-start;
+    font-weight: bold;
+    font-size: 1.5rem;
+    width: 30%;
   }
 }
 </style>
