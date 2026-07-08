@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps, defineEmits } from "vue";
+import { ref, defineProps, defineEmits, watch } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import SearchBar from "@/components/SearchBar.vue";
 const showNavigation = ref(true);
@@ -7,6 +7,7 @@ const isElementVisible = ref(false);
 const searchContainerRef = ref(null);
 const results = ref([]);
 const isLoading = ref(false);
+const searchQuery = ref("");
 
 const handleSearch = async (query) => {
   if (!query) {
@@ -30,6 +31,36 @@ const handleSearch = async (query) => {
   } finally {
     isLoading.value = false;
   }
+};
+
+watch(searchQuery, (newQuery) => {
+  handleSearch(newQuery);
+});
+
+const highlightText = (text, query) => {
+  const queryString = query ? String(query) : "";
+  if (!queryString) {
+    return {
+      before: text,
+      matched: "",
+      remaining: "",
+    };
+  }
+  const index = text.toLowerCase().indexOf(queryString.toLowerCase());
+
+  if (index === -1) {
+    return {
+      before: text,
+      matched: "",
+      remaining: "",
+    };
+  }
+
+  return {
+    before: text.substring(0, index),
+    matched: text.substring(index, index + queryString.length),
+    remaining: text.substring(index + queryString.length),
+  };
 };
 
 defineProps({
@@ -59,7 +90,15 @@ onClickOutside(searchContainerRef, () => {
           <div v-if="!isLoading && results.length > 0" :class="$style['list']">
             <template v-for="item in results" :key="item.id">
               <div :class="$style['list__item']">
-                {{ item.title }}
+                <span :class="$style['list__item--miss-matched']">{{
+                  highlightText(item.title, searchQuery).before
+                }}</span>
+                <span :class="$style['list__item--matched']">{{
+                  highlightText(item.title, searchQuery).matched
+                }}</span>
+                <span :class="$style['list__item--miss-matched']">
+                  {{ highlightText(item.title, searchQuery).remaining }}</span
+                >
               </div>
             </template>
           </div>
@@ -75,8 +114,9 @@ onClickOutside(searchContainerRef, () => {
         <span :class="$style['logo-container__title']">PURRSTORE</span>
       </div>
       <SearchBar
+        v-model="searchQuery"
         :is-visible="isVisible"
-        @debouncedSearch="handleSearch"
+        @debounced-search="handleSearch"
         @focus="emit('update:isVisible', true)"
       />
       <button type="button" :class="$style.action">
@@ -119,7 +159,7 @@ onClickOutside(searchContainerRef, () => {
 
 .search__wrapper--expanded {
   top: 0;
-  width: 85%;
+  width: 90%;
   height: 100%;
   min-height: 600px;
   max-height: 900px;
@@ -137,7 +177,7 @@ onClickOutside(searchContainerRef, () => {
   align-items: center;
   gap: 10px;
   max-width: 1420px;
-  width: 100%;
+  width: 85%;
   z-index: 100;
 
   &__logo-container {
@@ -221,7 +261,6 @@ onClickOutside(searchContainerRef, () => {
     justify-content: center;
     align-items: center;
     font-size: 1.2rem;
-    color: #878787;
     font-family: "Jersey 25", sans-serif;
     font-style: normal;
     border-radius: 20px;
@@ -257,6 +296,19 @@ onClickOutside(searchContainerRef, () => {
     height: 80px;
     border-radius: 20px;
     padding-left: 30px;
+
+    &--matched {
+      color: black;
+    }
+
+    &--miss-matched {
+      color: #878787;
+    }
+
+    &--matched,
+    &--miss-matched {
+      white-space: pre;
+    }
 
     &:hover {
       background: #dbf0fa;

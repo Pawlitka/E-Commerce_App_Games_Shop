@@ -1,10 +1,17 @@
 <script setup>
-import { ref, defineEmits, defineProps, watch, onUnmounted } from "vue";
+import {
+  ref,
+  defineEmits,
+  defineProps,
+  watch,
+  onUnmounted,
+  defineModel,
+} from "vue";
 const showSearchBar = ref(true);
 const focusSearchBar = ref(false);
 const emit = defineEmits(["focus", "debouncedSearch"]);
 
-const searchQuery = ref("");
+const searchQuery = defineModel();
 let timeoutId = null;
 
 watch(searchQuery, (newValue) => {
@@ -78,13 +85,9 @@ $search-bar-radius: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 100%;
+  align-items: center;
+  width: 85%;
   height: 100%;
-}
-
-.content {
-  position: relative;
-  width: 100%;
 }
 
 .search-bar {
@@ -92,7 +95,7 @@ $search-bar-radius: 20px;
   justify-content: center;
   align-items: center;
   min-width: 260px;
-  width: 100%;
+  width: 90%;
   height: 40px;
   background-color: #dbf0fa;
   border: #008ecc solid 1px;
