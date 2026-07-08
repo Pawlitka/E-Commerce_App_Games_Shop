@@ -37,6 +37,7 @@ watch(searchQuery, (newQuery) => {
   handleSearch(newQuery);
 });
 
+// eslint-disable-next-line
 const highlightText = (text, query) => {
   const queryString = query ? String(query) : "";
   if (!queryString) {
@@ -74,37 +75,17 @@ onClickOutside(searchContainerRef, () => {
 });
 </script>
 <template>
-  <div :class="$style['container']">
+  <div
+    :class="[
+      $style['container'],
+      { [$style['container--expanded']]: isVisible },
+    ]"
+  >
     <div
       v-if="showNavigation === true"
       ref="searchContainerRef"
-      :class="$style['header']"
+      :class="[$style['header'], { [$style['header--expanded']]: isVisible }]"
     >
-      <div v-if="isVisible" :class="$style['search__wrapper--expanded']">
-        <ul :class="$style['list__categories']">
-          <li :class="$style['list__categories__item']">Trending</li>
-          <li :class="$style['list__categories__item']">By Genre</li>
-          <li :class="$style['list__categories__item']">By Name</li>
-        </ul>
-        <div :class="$style['wrapper']">
-          <div v-if="!isLoading && results.length > 0" :class="$style['list']">
-            <template v-for="item in results" :key="item.id">
-              <div :class="$style['list__item']">
-                <span :class="$style['list__item--miss-matched']">{{
-                  highlightText(item.title, searchQuery).before
-                }}</span>
-                <span :class="$style['list__item--matched']">{{
-                  highlightText(item.title, searchQuery).matched
-                }}</span>
-                <span :class="$style['list__item--miss-matched']">
-                  {{ highlightText(item.title, searchQuery).remaining }}</span
-                >
-              </div>
-            </template>
-          </div>
-          <div v-else :class="$style['list__item--loading']">Ładowanie...</div>
-        </div>
-      </div>
       <div :class="$style['header__logo-container']">
         <img
           :class="$style['logo-container__logo']"
@@ -144,31 +125,65 @@ onClickOutside(searchContainerRef, () => {
         <span :class="$style['action__text']">Cart</span>
       </button>
     </div>
+    <div v-if="isVisible" :class="$style['search__wrapper--expanded']">
+      <ul :class="$style['list__categories']">
+        <li :class="$style['list__categories__item']">Trending</li>
+        <li :class="$style['list__categories__item']">By Genre</li>
+        <li :class="$style['list__categories__item']">By Name</li>
+      </ul>
+      <div :class="$style['wrapper']">
+        <div v-if="!isLoading && results.length > 0" :class="$style['list']">
+          <template v-for="item in results" :key="item.id">
+            <div :class="$style['list__item']">
+              <span :class="$style['list__item--miss-matched']">{{
+                highlightText(item.title, searchQuery).before
+              }}</span>
+              <span :class="$style['list__item--matched']">{{
+                highlightText(item.title, searchQuery).matched
+              }}</span>
+              <span :class="$style['list__item--miss-matched']">
+                {{ highlightText(item.title, searchQuery).remaining }}</span
+              >
+            </div>
+          </template>
+        </div>
+        <div v-else :class="$style['list__item--loading']">Ładowanie...</div>
+      </div>
+    </div>
   </div>
 </template>
 
 <style module lang="scss">
 .container {
   width: 100%;
-  background-color: #ffffff;
   border-bottom: 1px solid #878787;
-  height: 70px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #ffffff;
+
+  &--expanded {
+    backdrop-filter: blur(1px);
+    background-color: #7f7f7f;
+  }
 }
 
 .search__wrapper--expanded {
-  top: 0;
-  width: 90%;
-  height: 100%;
-  min-height: 600px;
+  top: 100%;
+  position: absolute;
+  width: 85%;
+  padding: 10px 20px;
+  min-height: 300px;
   max-height: 900px;
   background-color: #ffffff;
-  display: flex;
   z-index: -1;
-  border-radius: 20px;
-  border: 1px solid #878787;
-  position: absolute;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  border-bottom: 1px solid #878787;
+  border-left: 1px solid #878787;
+  border-right: 1px solid #878787;
+  border-top: 1px solid #878787;
 }
 
 .header {
@@ -179,11 +194,21 @@ onClickOutside(searchContainerRef, () => {
   max-width: 1420px;
   width: 85%;
   z-index: 100;
+  padding: 10px 20px;
+  background-color: #ffffff;
 
   &__logo-container {
     justify-content: start;
     display: flex;
     align-items: center;
+  }
+
+  &--expanded {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-top: 1px solid #878787;
+    border-right: 1px solid #878787;
+    border-left: 1px solid #878787;
   }
 }
 
@@ -233,30 +258,20 @@ onClickOutside(searchContainerRef, () => {
   }
 }
 .wrapper {
-  flex-direction: column;
   display: flex;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 5px;
-  margin-top: 80px;
 }
 
 .list__categories {
   display: flex;
   flex-direction: column;
   width: 15%;
-  height: 100%;
   align-items: center;
   justify-content: flex-start;
   gap: 5px;
-  margin-top: 80px;
-  margin-left: 20px;
+  float: left;
 
   &__item {
-    width: 100%;
-    height: 40px;
+    min-height: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -264,6 +279,7 @@ onClickOutside(searchContainerRef, () => {
     font-family: "Jersey 25", sans-serif;
     font-style: normal;
     border-radius: 20px;
+    padding: 0 20px;
 
     &:hover {
       background: #2d94c1;
@@ -274,28 +290,26 @@ onClickOutside(searchContainerRef, () => {
 
 .list {
   width: 100%;
-  height: 85px;
-  flex-direction: column;
-  display: flex;
   align-items: flex-start;
   justify-content: flex-start;
   color: black;
   font-size: 1rem;
   font-family: "Jersey 25", sans-serif;
   font-style: normal;
-  gap: 5px;
 
   &__item {
-    margin-left: 10px;
-    display: flex;
+    display: block;
     justify-content: flex-start;
     align-items: center;
     font-weight: bold;
     font-size: 1.5rem;
-    width: 90%;
-    height: 80px;
     border-radius: 20px;
-    padding-left: 30px;
+    padding: 5px 10px;
+    cursor: pointer;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 
     &--matched {
       color: black;
