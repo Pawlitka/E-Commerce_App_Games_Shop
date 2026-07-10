@@ -2,42 +2,59 @@
 import { ref, defineProps, defineEmits, watch } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import SearchBar from "@/components/SearchBar.vue";
+import { debounce } from "lodash";
 const showNavigation = ref(true);
-const isElementVisible = ref(false);
 const searchContainerRef = ref(null);
 const results = ref([]);
 const isLoading = ref(false);
 const searchQuery = ref("");
+const categories = ["Trending", "By Genre", "By Name"];
+let currentController = null;
 
+const selectedCategory = ref(categories[0]);
+
+const selectCategory = (category) => {
+  selectedCategory.value = category;
+};
 const handleSearch = async (query) => {
-  if (!query) {
-    results.value = [];
-    return;
+  if (currentController) {
+    currentController.abort();
   }
 
+  currentController = new AbortController();
   isLoading.value = true;
+
   try {
     const res = await fetch(
-      `http://localhost:8080/games/search?title=${encodeURIComponent(query)}`
+      `http://localhost:8080/games/search?title=${encodeURIComponent(query)}`,
+      {
+        signal: currentController.signal,
+      }
     );
-
-    if (!res.ok) {
-      throw new Error(`Serwer odpowiedział statusem: ${res.status}`);
-    }
 
     results.value = await res.json();
   } catch (error) {
     console.error("Błąd pobierania:", error);
   } finally {
-    isLoading.value = false;
+    if (!currentController?.signal.aborted) {
+      isLoading.value = false;
+    }
   }
 };
 
+const debouncedSearch = debounce(handleSearch, 500);
 watch(searchQuery, (newQuery) => {
-  handleSearch(newQuery);
+  const trimmedQuery = newQuery.trim();
+
+  if (trimmedQuery.length >= 3) {
+    isLoading.value = true;
+    debouncedSearch(trimmedQuery);
+  } else {
+    results.value = [];
+    isLoading.value = false;
+  }
 });
 
-// eslint-disable-next-line
 const highlightText = (text, query) => {
   const queryString = query ? String(query) : "";
   if (!queryString) {
@@ -70,12 +87,12 @@ defineProps({
 const emit = defineEmits(["update:isVisible"]);
 
 onClickOutside(searchContainerRef, () => {
-  isElementVisible.value = false;
   emit("update:isVisible", false);
 });
 </script>
 <template>
   <div
+    ref="searchContainerRef"
     :class="[
       $style['container'],
       { [$style['container--expanded']]: isVisible },
@@ -83,7 +100,6 @@ onClickOutside(searchContainerRef, () => {
   >
     <div
       v-if="showNavigation === true"
-      ref="searchContainerRef"
       :class="[$style['header'], { [$style['header--expanded']]: isVisible }]"
     >
       <div :class="$style['header__logo-container']">
@@ -126,13 +142,27 @@ onClickOutside(searchContainerRef, () => {
       </button>
     </div>
     <div v-if="isVisible" :class="$style['search__wrapper--expanded']">
-      <ul :class="$style['list__categories']">
-        <li :class="$style['list__categories__item']">Trending</li>
-        <li :class="$style['list__categories__item']">By Genre</li>
-        <li :class="$style['list__categories__item']">By Name</li>
+      <ul :class="$style['categories']">
+        <li
+          v-for="category in categories"
+          :key="category"
+          :class="[
+            $style['categories__item'],
+            {
+              [$style['categories__item--selected']]:
+                selectedCategory === category,
+            },
+          ]"
+          @click="selectCategory(category)"
+        >
+          {{ category }}
+        </li>
       </ul>
       <div :class="$style['wrapper']">
-        <div v-if="!isLoading && results.length > 0" :class="$style['list']">
+        <div v-if="isLoading" :class="$style['list__item--loading']">
+          Ładowanie...
+        </div>
+        <div v-else-if="results.length > 0" :class="$style['list']">
           <template v-for="item in results" :key="item.id">
             <div :class="$style['list__item']">
               <span :class="$style['list__item--miss-matched']">{{
@@ -147,7 +177,15 @@ onClickOutside(searchContainerRef, () => {
             </div>
           </template>
         </div>
-        <div v-else :class="$style['list__item--loading']">Ładowanie...</div>
+        <div
+          v-else-if="searchQuery.trim().length >= 3"
+          :class="$style['list__item--no-results']"
+        >
+          <span :class="$style['list__item--no-results__emoji']">\(o_o)/</span>
+          <span :class="$style['list__item--no-results__text']"
+            >no product found for '{{ searchQuery }}'</span
+          >
+        </div>
       </div>
     </div>
   </div>
@@ -174,16 +212,13 @@ onClickOutside(searchContainerRef, () => {
   position: absolute;
   width: 85%;
   padding: 10px 20px;
-  min-height: 300px;
+  min-height: 450px;
   max-height: 900px;
   background-color: #ffffff;
   z-index: -1;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-  border-bottom: 1px solid #878787;
-  border-left: 1px solid #878787;
-  border-right: 1px solid #878787;
-  border-top: 1px solid #878787;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border: 1px solid #878787;
 }
 
 .header {
@@ -191,24 +226,21 @@ onClickOutside(searchContainerRef, () => {
   justify-content: center;
   align-items: center;
   gap: 10px;
-  max-width: 1420px;
   width: 85%;
-  z-index: 100;
+  z-index: 1;
   padding: 10px 20px;
   background-color: #ffffff;
 
   &__logo-container {
-    justify-content: start;
     display: flex;
     align-items: center;
   }
 
   &--expanded {
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-    border-top: 1px solid #878787;
-    border-right: 1px solid #878787;
-    border-left: 1px solid #878787;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: 1px solid #878787;
+    border-bottom: none;
   }
 }
 
@@ -219,8 +251,6 @@ onClickOutside(searchContainerRef, () => {
   }
 
   &__title {
-    justify-content: center;
-    align-items: center;
     font-size: 2.5rem;
     font-family: "Jersey 25", sans-serif;
     font-style: normal;
@@ -232,7 +262,6 @@ onClickOutside(searchContainerRef, () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 80%;
   border: none;
   border-left: 1px solid #878787;
   padding-left: 10px;
@@ -261,7 +290,7 @@ onClickOutside(searchContainerRef, () => {
   display: flex;
 }
 
-.list__categories {
+.categories {
   display: flex;
   flex-direction: column;
   width: 15%;
@@ -271,6 +300,7 @@ onClickOutside(searchContainerRef, () => {
   float: left;
 
   &__item {
+    width: 100%;
     min-height: 40px;
     display: flex;
     justify-content: center;
@@ -278,11 +308,17 @@ onClickOutside(searchContainerRef, () => {
     font-size: 1.2rem;
     font-family: "Jersey 25", sans-serif;
     font-style: normal;
-    border-radius: 20px;
+    border-radius: 10px;
     padding: 0 20px;
+    color: #878787;
+    cursor: pointer;
 
-    &:hover {
-      background: #2d94c1;
+    &:not(&--selected):hover {
+      background: #dbf0fa;
+    }
+
+    &--selected {
+      background: #008ecc;
       color: #ffffff;
     }
   }
@@ -291,7 +327,6 @@ onClickOutside(searchContainerRef, () => {
 .list {
   width: 100%;
   align-items: flex-start;
-  justify-content: flex-start;
   color: black;
   font-size: 1rem;
   font-family: "Jersey 25", sans-serif;
@@ -327,18 +362,35 @@ onClickOutside(searchContainerRef, () => {
     &:hover {
       background: #dbf0fa;
     }
-  }
-}
 
-.list__item--loading {
-  &--loading {
-    margin-top: 4px;
-    margin-left: 10px;
-    display: flex;
-    justify-content: flex-start;
-    font-weight: bold;
-    font-size: 1.5rem;
-    width: 30%;
+    &--loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      font-size: 1.5rem;
+      width: 100%;
+    }
+
+    &--no-results {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      margin-top: 5%;
+      color: #878787;
+      font-family: "Jersey 25", sans-serif;
+      font-weight: 400;
+
+      &__emoji {
+        font-size: 8rem;
+      }
+
+      &__text {
+        font-size: 1.5rem;
+      }
+    }
   }
 }
 </style>

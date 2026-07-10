@@ -1,28 +1,10 @@
 <script setup>
-import {
-  ref,
-  defineEmits,
-  defineProps,
-  watch,
-  onUnmounted,
-  defineModel,
-} from "vue";
-const showSearchBar = ref(true);
+import { ref, defineEmits, defineProps, defineModel } from "vue";
 const focusSearchBar = ref(false);
 const emit = defineEmits(["focus", "debouncedSearch"]);
 
 const searchQuery = defineModel();
-let timeoutId = null;
 
-watch(searchQuery, (newValue) => {
-  clearTimeout(timeoutId);
-
-  timeoutId = setTimeout(() => {
-    emit("debouncedSearch", newValue);
-  }, 500);
-});
-
-onUnmounted(() => clearTimeout(timeoutId));
 defineProps({
   isVisible: Boolean,
 });
@@ -31,7 +13,6 @@ defineProps({
 <template>
   <div :class="$style['container']">
     <div
-      v-if="showSearchBar"
       :class="[
         $style['search-bar'],
         { [$style['search-bar--open']]: isVisible },
