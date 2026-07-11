@@ -2,7 +2,7 @@
 import { ref, defineProps, defineEmits, watch } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import SearchBar from "@/components/SearchBar.vue";
-import { debounce } from "lodash";
+import debounce from "lodash-es/debounce";
 const showNavigation = ref(true);
 const searchContainerRef = ref(null);
 const results = ref([]);
@@ -21,28 +21,39 @@ const handleSearch = async (query) => {
     currentController.abort();
   }
 
-  currentController = new AbortController();
+  const controller = new AbortController();
+  currentController = controller;
   isLoading.value = true;
 
   try {
     const res = await fetch(
       `http://localhost:8080/games/search?title=${encodeURIComponent(query)}`,
       {
-        signal: currentController.signal,
+        signal: controller.signal,
       }
     );
 
     results.value = await res.json();
   } catch (error) {
-    console.error("Błąd pobierania:", error);
+    if (error.name !== "AbortError") {
+      console.error("Błąd pobierania:", error);
+    }
   } finally {
-    if (!currentController?.signal.aborted) {
+    if (currentController === controller && !controller.signal.aborted) {
       isLoading.value = false;
     }
   }
 };
 
-const debouncedSearch = debounce(handleSearch, 500);
+const debouncedSearch = debounce((query) => {
+  const currentQuery = searchQuery.value.trim();
+
+  if (currentQuery.length < 3 || currentQuery !== query) {
+    return;
+  }
+
+  handleSearch(query);
+}, 500);
 watch(searchQuery, (newQuery) => {
   const trimmedQuery = newQuery.trim();
 
@@ -50,6 +61,10 @@ watch(searchQuery, (newQuery) => {
     isLoading.value = true;
     debouncedSearch(trimmedQuery);
   } else {
+    if (currentController) {
+      currentController.abort();
+      currentController = null;
+    }
     results.value = [];
     isLoading.value = false;
   }
