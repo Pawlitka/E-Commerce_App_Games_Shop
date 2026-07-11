@@ -1,29 +1,24 @@
-# e-commerce-website
+# Purrchase
 
-## Project setup
-```
-npm install
-```
+Purrchase is a dynamic E-Commerce web application built with Vue.js, inspired by online platforms for buying video games.
+The project is currently under development and already features a game carousel and game tiles.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Features (Current)
 
-### Compiles and minifies for production
-```
-npm run build
-```
+- Game carousel – rotating showcase of featured games.
 
-### Run your unit tests
-```
-npm run test:unit
-```
+- Game tiles – individual game cards to display title, image, and basic information.
 
-### Lints and fixes files
-```
-npm run lint
-```
+## Planned Features
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- Shopping cart – add, remove, and manage selected games.
+
+- Navigation header – easy access to store sections.
+
+- Footer – additional links and information.
+
+- Search bar – search games by name.
+
+- Category filtering – browse games by genres (e.g., Horror, RPG).
+
+- Platform filtering – filter games by available platforms (PC, PlayStation, Xbox, etc.).
