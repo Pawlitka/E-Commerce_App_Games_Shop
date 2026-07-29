@@ -92,7 +92,4 @@ onMounted(async () => {
     margin-bottom: 50px;
   }
 }
-.blur__container {
-  background-color: #878787;
-}
 </style>

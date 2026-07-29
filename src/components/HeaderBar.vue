@@ -1,6 +1,7 @@
 <script setup>
 import { ref, defineProps, defineEmits, watch } from "vue";
 import { onClickOutside } from "@vueuse/core";
+import { RouterLink } from "vue-router";
 import SearchBar from "@/components/SearchBar.vue";
 import { debounce } from "lodash";
 const showNavigation = ref(true);
@@ -50,6 +51,8 @@ watch(searchQuery, (newQuery) => {
     isLoading.value = true;
     debouncedSearch(trimmedQuery);
   } else {
+    debouncedSearch.cancel();
+    currentController?.abort();
     results.value = [];
     isLoading.value = false;
   }
@@ -102,44 +105,51 @@ onClickOutside(searchContainerRef, () => {
       v-if="showNavigation === true"
       :class="[$style['header'], { [$style['header--expanded']]: isVisible }]"
     >
-      <div :class="$style['header__logo-container']">
-        <img
-          :class="$style['logo-container__logo']"
-          :src="require(`@/assets/logo/cat_logo_blue.svg`)"
-          alt="Site logo"
-        />
-        <span :class="$style['logo-container__title']">PURRSTORE</span>
-      </div>
+      <RouterLink to="/">
+        <div :class="$style['header__logo-container']">
+          <img
+            :class="$style['logo-container__logo']"
+            :src="require(`@/assets/logo/cat_logo_blue.svg`)"
+            alt="Site logo"
+          />
+          <span :class="$style['logo-container__title']">PURRSTORE</span>
+        </div>
+      </RouterLink>
       <SearchBar
         v-model="searchQuery"
         :is-visible="isVisible"
-        @debounced-search="handleSearch"
         @focus="emit('update:isVisible', true)"
       />
-      <button type="button" :class="$style.action">
-        <img
-          :class="$style['action__icon']"
-          :src="require(`@/assets/icon/user_icon.svg`)"
-          alt="User icon"
-        />
-        <span :class="$style['action__text']">Sign in</span>
-      </button>
-      <button type="button" :class="$style.action">
-        <img
-          :class="$style['action__icon']"
-          :src="require(`@/assets/icon/favourite_icon.svg`)"
-          alt="Favourite icon']"
-        />
-        <span :class="$style['action__text']">Favourite</span>
-      </button>
-      <button type="button" :class="$style.action">
-        <img
-          :class="$style['action__icon']"
-          :src="require(`@/assets/icon/shopping-cart_icon_blue.svg`)"
-          alt="Cart icon']"
-        />
-        <span :class="$style['action__text']">Cart</span>
-      </button>
+      <RouterLink to="/user">
+        <button type="button" :class="$style.action">
+          <img
+            :class="$style['action__icon']"
+            :src="require(`@/assets/icon/user_icon.svg`)"
+            alt="User icon"
+          />
+          <span :class="$style['action__text']">Sign in</span>
+        </button>
+      </RouterLink>
+      <RouterLink to="/favourite">
+        <button type="button" :class="$style.action">
+          <img
+            :class="$style['action__icon']"
+            :src="require(`@/assets/icon/favourite_icon.svg`)"
+            alt="Favourite icon']"
+          />
+          <span :class="$style['action__text']">Favourite</span>
+        </button>
+      </RouterLink>
+      <RouterLink to="/cart">
+        <button type="button" :class="$style.action">
+          <img
+            :class="$style['action__icon']"
+            :src="require(`@/assets/icon/shopping-cart_icon_blue.svg`)"
+            alt="Cart icon"
+          />
+          <span :class="$style['action__text']">Cart</span>
+        </button>
+      </RouterLink>
     </div>
     <div v-if="isVisible" :class="$style['search__wrapper--expanded']">
       <ul :class="$style['categories']">
@@ -197,9 +207,7 @@ onClickOutside(searchContainerRef, () => {
   border-bottom: 1px solid #878787;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   align-items: center;
-  background-color: #ffffff;
 
   &--expanded {
     backdrop-filter: blur(1px);
@@ -215,7 +223,7 @@ onClickOutside(searchContainerRef, () => {
   min-height: 450px;
   max-height: 900px;
   background-color: #ffffff;
-  z-index: -1;
+  z-index: 2;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   border: 1px solid #878787;
@@ -392,5 +400,9 @@ onClickOutside(searchContainerRef, () => {
       }
     }
   }
+}
+
+a {
+  text-decoration: none;
 }
 </style>

@@ -1,23 +1,14 @@
 <script setup>
-import { ref, defineEmits, defineProps, defineModel } from "vue";
+import { ref, defineEmits, defineModel } from "vue";
 const focusSearchBar = ref(false);
 const emit = defineEmits(["focus", "debouncedSearch"]);
 
 const searchQuery = defineModel();
-
-defineProps({
-  isVisible: Boolean,
-});
 </script>
 
 <template>
   <div :class="$style['container']">
-    <div
-      :class="[
-        $style['search-bar'],
-        { [$style['search-bar--open']]: isVisible },
-      ]"
-    >
+    <div :class="[$style['search-bar']]">
       <input
         v-model="searchQuery"
         :class="$style['search-bar__input']"
@@ -30,7 +21,7 @@ defineProps({
         :class="[
           $style['search-bar__icon-container'],
           {
-            [$style['search-bar__icon-container--open']]: focusSearchBar,
+            [$style['search-bar__icon-container']]: focusSearchBar,
           },
         ]"
       >
@@ -117,11 +108,6 @@ $search-bar-radius: 20px;
 
     &:hover {
       background-color: #2d94c1;
-    }
-
-    &__icon {
-      width: 1.5rem;
-      height: 1.5rem;
     }
   }
 }
