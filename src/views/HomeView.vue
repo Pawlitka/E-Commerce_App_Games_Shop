@@ -16,9 +16,9 @@ const error = ref(null);
 const loadGames = async () => {
   try {
     loading.value = true;
-    const response = await getGames.fetchGamesData();
+    error.value = null;
 
-    games.value = response;
+    games.value = await getGames.fetchGamesData();
   } catch (err) {
     error.value = "Nie udało się pobrać gier.";
   } finally {

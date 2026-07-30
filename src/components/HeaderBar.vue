@@ -1,9 +1,12 @@
 <script setup>
-import { ref, defineProps, defineEmits, watch } from "vue";
+import { defineEmits, defineProps, ref, watch } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { RouterLink } from "vue-router";
 import SearchBar from "@/components/SearchBar.vue";
 import { debounce } from "lodash";
+import { getGamesByTitleSearchBar } from "@/data/eCommerceAppGamesShopApi";
+import axios from "axios";
+
 const showNavigation = ref(true);
 const searchContainerRef = ref(null);
 const results = ref([]);
@@ -17,7 +20,7 @@ const selectedCategory = ref(categories[0]);
 const selectCategory = (category) => {
   selectedCategory.value = category;
 };
-const handleSearch = async (query) => {
+const handleSearch = async () => {
   if (currentController) {
     currentController.abort();
   }
@@ -26,16 +29,17 @@ const handleSearch = async (query) => {
   isLoading.value = true;
 
   try {
-    const res = await fetch(
-      `http://localhost:8080/games/search?title=${encodeURIComponent(query)}`,
+    results.value = await getGamesByTitleSearchBar.fetchGamesTitle(
+      searchQuery.value,
       {
         signal: currentController.signal,
       }
     );
-
-    results.value = await res.json();
   } catch (error) {
-    console.error("Błąd pobierania:", error);
+    if (axios.isCancel(error) || error.name === "CanceledError") {
+      return;
+    }
+    console.error("Error while pulling data: ", error);
   } finally {
     if (!currentController?.signal.aborted) {
       isLoading.value = false;
