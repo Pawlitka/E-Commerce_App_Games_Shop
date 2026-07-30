@@ -21,6 +21,11 @@ const selectCategory = (category) => {
   selectedCategory.value = category;
 };
 const handleSearch = async () => {
+  if (!searchQuery.value.trim()) {
+    results.value = [];
+    return;
+  }
+
   if (currentController) {
     currentController.abort();
   }
@@ -29,17 +34,21 @@ const handleSearch = async () => {
   isLoading.value = true;
 
   try {
-    results.value = await getGamesByTitleSearchBar.fetchGamesTitle(
+    const response = await getGamesByTitleSearchBar.fetchGamesTitle(
       searchQuery.value,
+      0,
+      10,
       {
         signal: currentController.signal,
       }
     );
+
+    results.value = response.games;
   } catch (error) {
     if (axios.isCancel(error) || error.name === "CanceledError") {
       return;
     }
-    console.error("Error while pulling data: ", error);
+    console.error("Błąd podczas pobierania danych wyszukiwania: ", error);
   } finally {
     if (!currentController?.signal.aborted) {
       isLoading.value = false;
@@ -109,7 +118,7 @@ onClickOutside(searchContainerRef, () => {
       v-if="showNavigation === true"
       :class="[$style['header'], { [$style['header--expanded']]: isVisible }]"
     >
-      <RouterLink to="/">
+      <RouterLink to="/" :class="$style['skip-link']">
         <div :class="$style['header__logo-container']">
           <img
             :class="$style['logo-container__logo']"
@@ -124,35 +133,32 @@ onClickOutside(searchContainerRef, () => {
         :is-visible="isVisible"
         @focus="emit('update:isVisible', true)"
       />
-      <RouterLink to="/user">
-        <button type="button" :class="$style.action">
-          <img
-            :class="$style['action__icon']"
-            :src="require(`@/assets/icon/user_icon.svg`)"
-            alt="User icon"
-          />
-          <span :class="$style['action__text']">Sign in</span>
-        </button>
+      <RouterLink to="/user" :class="[$style['action'], $style['skip-link']]">
+        <img
+          :class="$style['action__icon']"
+          :src="require(`@/assets/icon/user_icon.svg`)"
+          alt="User icon"
+        />
+        <span :class="$style['action__text']">Sign in</span>
       </RouterLink>
-      <RouterLink to="/favourite">
-        <button type="button" :class="$style.action">
-          <img
-            :class="$style['action__icon']"
-            :src="require(`@/assets/icon/favourite_icon.svg`)"
-            alt="Favourite icon']"
-          />
-          <span :class="$style['action__text']">Favourite</span>
-        </button>
+      <RouterLink
+        to="/favourite"
+        :class="[$style['action'], $style['skip-link']]"
+      >
+        <img
+          :class="$style['action__icon']"
+          :src="require(`@/assets/icon/favourite_icon.svg`)"
+          alt="Favourite icon']"
+        />
+        <span :class="$style['action__text']">Favourite</span>
       </RouterLink>
-      <RouterLink to="/cart">
-        <button type="button" :class="$style.action">
-          <img
-            :class="$style['action__icon']"
-            :src="require(`@/assets/icon/shopping-cart_icon_blue.svg`)"
-            alt="Cart icon"
-          />
-          <span :class="$style['action__text']">Cart</span>
-        </button>
+      <RouterLink to="/cart" :class="[$style['action'], $style['skip-link']]">
+        <img
+          :class="$style['action__icon']"
+          :src="require(`@/assets/icon/shopping-cart_icon_blue.svg`)"
+          alt="Cart icon"
+        />
+        <span :class="$style['action__text']">Cart</span>
       </RouterLink>
     </div>
     <div v-if="isVisible" :class="$style['search__wrapper--expanded']">
@@ -406,7 +412,7 @@ onClickOutside(searchContainerRef, () => {
   }
 }
 
-a {
+.skip-link {
   text-decoration: none;
 }
 </style>

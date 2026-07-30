@@ -1,35 +1,68 @@
 import axios from "axios";
-const BASE_URL =
-  process.env.APP_VUE_SPRING_API_BASE_URL || "http://localhost:8080";
+const BASE_URL = process.env.VUE_APP_SPRING_API_BASE_URL;
 
 export const getGames = {
-  async fetchGamesData(options = {}) {
-    const { data } = await axios.get(`${BASE_URL}/games`, options);
+  async fetchGamesData(page = 0, size = 4) {
+    const response = await axios.get(`${BASE_URL}/games`, {
+      params: { page, size },
+    });
 
-    return data.map((response) => ({
-      id: response?.id ?? "",
-      genres: response?.genres ?? [],
-      platform: response?.platforms?.[0] ?? null,
-      imagePath: response?.mainImage ?? "",
-      title: response?.title ?? "",
-      price: response?.price ?? 0,
-      discountInPercentage: response?.discountInPercentage ?? 0,
-      reviews: response?.reviewsCount ?? 0,
-      numberOfStars: response?.rate ?? 0,
-      description: response?.description ?? "",
-    }));
+    const sliceData = response.data;
+
+    const mappedGames = sliceData.content.map((game) => {
+      const firstPlatform =
+        Array.isArray(game?.platforms) && game.platforms.length > 0
+          ? game.platforms[0]
+          : null;
+
+      return {
+        id: game?.id ?? "",
+        title: game?.title ?? "",
+        price: Number(game?.price ?? 0),
+        imagePath: game?.mainImage ?? "",
+        reviews: game?.reviewsCount ?? 0,
+        discountInPercentage: Number(game?.discountInPercentage ?? 0),
+        numberOfStars: game?.rate ?? 0,
+        description: game?.description ?? "",
+        genres: Array.from(game?.genres ?? []),
+        platform: firstPlatform,
+      };
+    });
+
+    return {
+      games: mappedGames,
+      hasNext: !sliceData.last,
+      isLast: sliceData.last,
+      pageNumber: sliceData.number,
+    };
   },
 };
 
 export const getGamesByTitleSearchBar = {
-  async fetchGamesTitle(query = "", options = {}) {
-    const url = `${BASE_URL}/games/search?title=${encodeURIComponent(query)}`;
+  async fetchGamesTitle(query = "", page = 0, size = 1, axiosOptions = {}) {
+    const response = await axios.get(`${BASE_URL}/games/search`, {
+      params: {
+        title: query,
+        page,
+        size,
+      },
+      ...axiosOptions,
+    });
 
-    const { data } = await axios.get(url, options);
+    const sliceData = response.data;
 
-    return data.map((response) => ({
-      id: response?.id ?? "",
-      title: response?.title ?? "",
-    }));
+    const mappedGames = (sliceData.content || []).map((game) => {
+      return {
+        id: game?.id ?? "",
+        title: game?.title ?? "",
+      };
+    });
+
+    return {
+      games: mappedGames,
+      hasNext: !sliceData.last,
+      isLast: sliceData.last,
+      pageNumber: sliceData.number,
+    };
   },
 };

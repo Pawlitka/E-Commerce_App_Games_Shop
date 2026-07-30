@@ -3,32 +3,48 @@ import TopGamesCarousel from "@/components/TopGamesCarousel.vue";
 import GameTile from "@/components/GameTile.vue";
 import { carouselSlides } from "@/data/mockData/mockDataCarouselSlides";
 import WrapperView from "@/views/WrapperView.vue";
-import { onMounted, ref } from "vue";
+import { ref, onMounted } from "vue";
 import { getGames } from "@/data/eCommerceAppGamesShopApi";
+import { useInfiniteScroll } from "@vueuse/core";
 
 const isElementVisible = ref(false);
 const currency = "PLN";
 
 const games = ref([]);
-const loading = ref(true);
-const error = ref(null);
+const page = ref(0);
+const hasMore = ref(true);
+const isLoading = ref(false);
 
 const loadGames = async () => {
-  try {
-    loading.value = true;
-    error.value = null;
+  if (isLoading.value || !hasMore.value) return;
 
-    games.value = await getGames.fetchGamesData();
-  } catch (err) {
-    error.value = "Nie udało się pobrać gier.";
+  isLoading.value = true;
+
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    const response = await getGames.fetchGamesData(page.value, 4);
+    games.value.push(...response.games);
+    hasMore.value = response.hasNext;
+    page.value++;
+  } catch (error) {
+    console.error("Błąd ładowania gier:", error);
   } finally {
-    loading.value = false;
+    isLoading.value = false;
   }
 };
 
-onMounted(async () => {
-  await loadGames();
+onMounted(() => {
+  loadGames();
 });
+
+useInfiniteScroll(
+  document,
+  () => {
+    loadGames();
+  },
+  { distance: 100 }
+);
 </script>
 
 <template>
@@ -56,6 +72,11 @@ onMounted(async () => {
           />
         </template>
       </div>
+
+      <div :class="$style.loader">
+        <p v-if="isLoading">Ładowanie kolejnych gier...</p>
+        <p v-else-if="!hasMore && games.length > 0">To już wszystkie gry!</p>
+      </div>
     </WrapperView>
   </main>
 </template>
@@ -76,8 +97,6 @@ onMounted(async () => {
   transition: opacity 0.3s ease;
 }
 .home {
-  position: relative;
-  width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
@@ -91,5 +110,10 @@ onMounted(async () => {
   &__game-tile {
     margin-bottom: 50px;
   }
+}
+
+.loader {
+  padding: 20px;
+  text-align: center;
 }
 </style>
