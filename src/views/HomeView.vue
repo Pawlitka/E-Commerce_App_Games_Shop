@@ -21,8 +21,6 @@ const loadGames = async () => {
   isLoading.value = true;
 
   try {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
     const response = await getGames.fetchGamesData(page.value, 4);
     games.value.push(...response.games);
     hasMore.value = response.hasNext;
@@ -53,6 +51,7 @@ useInfiniteScroll(
       v-if="isElementVisible"
       :class="$style['search-overlay']"
       @click="isElementVisible = false"
+      @keydown.esc="isElementVisible = false"
     ></div>
     <WrapperView
       :is-visible="isElementVisible"
@@ -63,6 +62,7 @@ useInfiniteScroll(
           :slides="carouselSlides"
           :class="$style['home__games-carousel']"
           :should-start-auto-play="true"
+          tabindex="0"
         />
         <template v-for="game in games" :key="game.id">
           <GameTile

@@ -8,7 +8,9 @@ const isElementVisible = ref(false);
   <div
     v-if="isElementVisible"
     :class="$style['search-overlay']"
+    tabindex="-1"
     @click="isElementVisible = false"
+    @keydown.esc="isElementVisible = false"
   ></div>
   <WrapperView
     :is-visible="isElementVisible"

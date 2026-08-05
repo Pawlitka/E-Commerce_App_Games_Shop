@@ -1,9 +1,8 @@
 <script setup>
 import { defineEmits, defineProps, ref, watch } from "vue";
-import { onClickOutside } from "@vueuse/core";
+import { onClickOutside, useDebounceFn } from "@vueuse/core";
 import { RouterLink } from "vue-router";
 import SearchBar from "@/components/SearchBar.vue";
-import { debounce } from "lodash";
 import { getGamesByTitleSearchBar } from "@/data/eCommerceAppGamesShopApi";
 import axios from "axios";
 
@@ -13,6 +12,7 @@ const results = ref([]);
 const isLoading = ref(false);
 const searchQuery = ref("");
 const categories = ["Trending", "By Genre", "By Name"];
+const hasError = ref(false);
 let currentController = null;
 
 const selectedCategory = ref(categories[0]);
@@ -22,6 +22,7 @@ const selectCategory = (category) => {
 };
 const handleSearch = async () => {
   if (!searchQuery.value.trim()) {
+    hasError.value = false;
     results.value = [];
     return;
   }
@@ -30,7 +31,11 @@ const handleSearch = async () => {
     currentController.abort();
   }
 
-  currentController = new AbortController();
+  const controller = new AbortController();
+  currentController = controller;
+
+  results.value = [];
+  hasError.value = false;
   isLoading.value = true;
 
   try {
@@ -39,32 +44,38 @@ const handleSearch = async () => {
       0,
       10,
       {
-        signal: currentController.signal,
+        signal: controller.signal,
       }
     );
 
-    results.value = response.games;
+    if (currentController === controller) {
+      results.value = response.games;
+    }
   } catch (error) {
     if (axios.isCancel(error) || error.name === "CanceledError") {
       return;
     }
     console.error("Błąd podczas pobierania danych wyszukiwania: ", error);
+    if (currentController === controller) {
+      hasError.value = true;
+    }
   } finally {
-    if (!currentController?.signal.aborted) {
+    if (currentController === controller) {
       isLoading.value = false;
     }
   }
 };
 
-const debouncedSearch = debounce(handleSearch, 500);
+const debouncedSearch = useDebounceFn((query) => {
+  handleSearch(query);
+}, 500);
 watch(searchQuery, (newQuery) => {
   const trimmedQuery = newQuery.trim();
-
   if (trimmedQuery.length >= 3) {
     isLoading.value = true;
     debouncedSearch(trimmedQuery);
   } else {
-    debouncedSearch.cancel();
+    debouncedSearch.cancel;
     currentController?.abort();
     results.value = [];
     isLoading.value = false;
@@ -101,7 +112,6 @@ defineProps({
   isVisible: Boolean,
 });
 const emit = defineEmits(["update:isVisible"]);
-
 onClickOutside(searchContainerRef, () => {
   emit("update:isVisible", false);
 });
@@ -113,9 +123,10 @@ onClickOutside(searchContainerRef, () => {
       $style['container'],
       { [$style['container--expanded']]: isVisible },
     ]"
+    @keydown.esc="emit('update:isVisible', false)"
   >
     <div
-      v-if="showNavigation === true"
+      v-if="showNavigation"
       :class="[$style['header'], { [$style['header--expanded']]: isVisible }]"
     >
       <RouterLink to="/" :class="$style['skip-link']">
@@ -132,6 +143,7 @@ onClickOutside(searchContainerRef, () => {
         v-model="searchQuery"
         :is-visible="isVisible"
         @focus="emit('update:isVisible', true)"
+        @close="emit('update:isVisible', true)"
       />
       <RouterLink to="/user" :class="[$style['action'], $style['skip-link']]">
         <img
@@ -173,6 +185,8 @@ onClickOutside(searchContainerRef, () => {
                 selectedCategory === category,
             },
           ]"
+          tabindex="0"
+          role="button"
           @click="selectCategory(category)"
         >
           {{ category }}

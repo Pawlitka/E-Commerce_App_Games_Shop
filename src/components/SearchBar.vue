@@ -24,6 +24,7 @@ const searchQuery = defineModel();
             [$style['search-bar__icon-container']]: focusSearchBar,
           },
         ]"
+        @click="emit('close')"
       >
         <img
           :class="$style['search-bar__icon']"
