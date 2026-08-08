@@ -3,7 +3,7 @@ import TopGamesCarousel from "@/components/TopGamesCarousel.vue";
 import GameTile from "@/components/GameTile.vue";
 import { carouselSlides } from "@/data/mockData/mockDataCarouselSlides";
 import WrapperView from "@/views/WrapperView.vue";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { getGames } from "@/data/eCommerceAppGamesShopApi";
 import { useInfiniteScroll } from "@vueuse/core";
 
@@ -14,11 +14,17 @@ const games = ref([]);
 const page = ref(0);
 const hasMore = ref(true);
 const isLoading = ref(false);
+const hasError = ref(false);
+
+const canLoadMore = computed(() => {
+  return !isLoading.value && hasMore.value && !hasError.value;
+});
 
 const loadGames = async () => {
-  if (isLoading.value || !hasMore.value) return;
+  if (!canLoadMore.value && page.value > 1) return;
 
   isLoading.value = true;
+  hasError.value = false;
 
   try {
     const response = await getGames.fetchGamesData(page.value, 4);
@@ -27,11 +33,16 @@ const loadGames = async () => {
     page.value++;
   } catch (error) {
     console.error("Błąd ładowania gier:", error);
+    hasError.value = true;
   } finally {
     isLoading.value = false;
   }
 };
 
+const retryLoadGames = () => {
+  hasError.value = false;
+  loadGames();
+};
 onMounted(() => {
   loadGames();
 });
@@ -41,7 +52,7 @@ useInfiniteScroll(
   () => {
     loadGames();
   },
-  { distance: 100 }
+  { distance: 100, canLoadMore: () => canLoadMore.value }
 );
 </script>
 
@@ -76,6 +87,11 @@ useInfiniteScroll(
       <div :class="$style.loader">
         <p v-if="isLoading">Ładowanie kolejnych gier...</p>
         <p v-else-if="!hasMore && games.length > 0">To już wszystkie gry!</p>
+      </div>
+
+      <div v-if="hasError" :class="$style.loader">
+        <p>Nie udało się pobrać kolejnych gier.</p>
+        <button type="button" @click="retryLoadGames">Spróbuj ponownie</button>
       </div>
     </WrapperView>
   </main>

@@ -1,17 +1,14 @@
 <script setup>
-import { defineEmits, defineProps, ref, watch } from "vue";
-import { onClickOutside, useDebounceFn } from "@vueuse/core";
+import { defineEmits, defineProps, ref } from "vue";
+import { onClickOutside } from "@vueuse/core";
 import { RouterLink } from "vue-router";
 import SearchBar from "@/components/SearchBar.vue";
 
 import { useGameSearch } from "@/composables/useGameSearchByTitle";
 
-const NUMBER_OF_CHARS_TO_START_SEARCH = 3;
-const DEBOUNCE_TIME = 500;
 const showNavigation = ref(true);
 const searchContainerRef = ref(null);
 const categories = ["Trending", "By Genre", "By Name"];
-let currentController = null;
 
 const selectedCategory = ref(categories[0]);
 
@@ -19,23 +16,7 @@ const selectCategory = (category) => {
   selectedCategory.value = category;
 };
 
-const { searchQuery, results, isLoading, handleSearch } = useGameSearch();
-
-const debouncedSearch = useDebounceFn((query) => {
-  handleSearch(query);
-}, DEBOUNCE_TIME);
-watch(searchQuery, (newQuery) => {
-  const trimmedQuery = newQuery.trim();
-  if (trimmedQuery.length >= NUMBER_OF_CHARS_TO_START_SEARCH) {
-    isLoading.value = true;
-    debouncedSearch(trimmedQuery);
-  } else {
-    debouncedSearch.cancel;
-    currentController?.abort();
-    results.value = [];
-    isLoading.value = false;
-  }
-});
+const { searchQuery, results, isLoading, hasError } = useGameSearch();
 
 const highlightText = (text, query) => {
   const queryString = query ? String(query) : "";
@@ -84,7 +65,7 @@ onClickOutside(searchContainerRef, () => {
       v-if="showNavigation"
       :class="[$style['header'], { [$style['header--expanded']]: isVisible }]"
     >
-      <RouterLink to="/" :class="$style['skip-link']">
+      <RouterLink :to="{ name: 'home' }" :class="$style['skip-link']">
         <div :class="$style['header__logo-container']">
           <img
             :class="$style['logo-container__logo']"
@@ -100,7 +81,10 @@ onClickOutside(searchContainerRef, () => {
         @focus="emit('update:isVisible', true)"
         @close="emit('update:isVisible', true)"
       />
-      <RouterLink to="/user" :class="[$style['action'], $style['skip-link']]">
+      <RouterLink
+        :to="{ name: 'user' }"
+        :class="[$style['action'], $style['skip-link']]"
+      >
         <img
           :class="$style['action__icon']"
           :src="require(`@/assets/icon/user_icon.svg`)"
@@ -109,7 +93,7 @@ onClickOutside(searchContainerRef, () => {
         <span :class="$style['action__text']">Sign in</span>
       </RouterLink>
       <RouterLink
-        to="/favourite"
+        :to="{ name: 'favourite' }"
         :class="[$style['action'], $style['skip-link']]"
       >
         <img
@@ -119,7 +103,10 @@ onClickOutside(searchContainerRef, () => {
         />
         <span :class="$style['action__text']">Favourite</span>
       </RouterLink>
-      <RouterLink to="/cart" :class="[$style['action'], $style['skip-link']]">
+      <RouterLink
+        :to="{ name: 'cart' }"
+        :class="[$style['action'], $style['skip-link']]"
+      >
         <img
           :class="$style['action__icon']"
           :src="require(`@/assets/icon/shopping-cart_icon_blue.svg`)"
@@ -149,7 +136,13 @@ onClickOutside(searchContainerRef, () => {
       </ul>
       <div :class="$style['wrapper']">
         <div v-if="isLoading" :class="$style['list__item--loading']">
-          Ładowanie...
+          Loading...
+        </div>
+        <div v-else-if="hasError" :class="$style['list__item--no-results']">
+          <span :class="$style['list__item--no-results__emoji']">\(-_-)/</span>
+          <span :class="$style['list__item--no-results__text']">
+            Something gone wrong. Could not download search results.
+          </span>
         </div>
         <div v-else-if="results.length > 0" :class="$style['list']">
           <template v-for="item in results" :key="item.id">
