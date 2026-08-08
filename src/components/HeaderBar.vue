@@ -1,44 +1,174 @@
 <script setup>
-import { ref } from "vue";
+import { defineEmits, defineProps, ref } from "vue";
+import { onClickOutside } from "@vueuse/core";
+import { RouterLink } from "vue-router";
 import SearchBar from "@/components/SearchBar.vue";
+
+import { useGameSearch } from "@/composables/useGameSearchByTitle";
+
 const showNavigation = ref(true);
+const searchContainerRef = ref(null);
+const categories = ["Trending", "By Genre", "By Name"];
+
+const selectedCategory = ref(categories[0]);
+
+const selectCategory = (category) => {
+  selectedCategory.value = category;
+};
+
+const { searchQuery, results, isLoading, hasError } = useGameSearch();
+
+const highlightText = (text, query) => {
+  const queryString = query ? String(query) : "";
+  if (!queryString) {
+    return {
+      before: text,
+      matched: "",
+      remaining: "",
+    };
+  }
+  const index = text.toLowerCase().indexOf(queryString.toLowerCase());
+
+  if (index === -1) {
+    return {
+      before: text,
+      matched: "",
+      remaining: "",
+    };
+  }
+
+  return {
+    before: text.substring(0, index),
+    matched: text.substring(index, index + queryString.length),
+    remaining: text.substring(index + queryString.length),
+  };
+};
+
+defineProps({
+  isVisible: Boolean,
+});
+const emit = defineEmits(["update:isVisible"]);
+onClickOutside(searchContainerRef, () => {
+  emit("update:isVisible", false);
+});
 </script>
 <template>
-  <div :class="$style['container']">
-    <div v-if="showNavigation" :class="$style['header']">
-      <div :class="$style['header__logo-container']">
-        <img
-          :class="$style['logo-container__logo']"
-          :src="require(`@/assets/logo/cat_logo_blue.svg`)"
-          alt="Site logo"
-        />
-        <span :class="$style['logo-container__title']">PURRSTORE</span>
-      </div>
-      <SearchBar :show-search-bar="true" />
-      <button type="button" :class="$style.action">
+  <div
+    ref="searchContainerRef"
+    :class="[
+      $style['container'],
+      { [$style['container--expanded']]: isVisible },
+    ]"
+    @keydown.esc="emit('update:isVisible', false)"
+  >
+    <div
+      v-if="showNavigation"
+      :class="[$style['header'], { [$style['header--expanded']]: isVisible }]"
+    >
+      <RouterLink :to="{ name: 'home' }" :class="$style['skip-link']">
+        <div :class="$style['header__logo-container']">
+          <img
+            :class="$style['logo-container__logo']"
+            :src="require(`@/assets/logo/cat_logo_blue.svg`)"
+            alt="Site logo"
+          />
+          <span :class="$style['logo-container__title']">PURRSTORE</span>
+        </div>
+      </RouterLink>
+      <SearchBar
+        v-model="searchQuery"
+        :is-visible="isVisible"
+        @focus="emit('update:isVisible', true)"
+        @close="emit('update:isVisible', true)"
+      />
+      <RouterLink
+        :to="{ name: 'user' }"
+        :class="[$style['action'], $style['skip-link']]"
+      >
         <img
           :class="$style['action__icon']"
           :src="require(`@/assets/icon/user_icon.svg`)"
           alt="User icon"
         />
         <span :class="$style['action__text']">Sign in</span>
-      </button>
-      <button type="button" :class="$style.action">
+      </RouterLink>
+      <RouterLink
+        :to="{ name: 'favourite' }"
+        :class="[$style['action'], $style['skip-link']]"
+      >
         <img
           :class="$style['action__icon']"
           :src="require(`@/assets/icon/favourite_icon.svg`)"
           alt="Favourite icon']"
         />
         <span :class="$style['action__text']">Favourite</span>
-      </button>
-      <button type="button" :class="$style.action">
+      </RouterLink>
+      <RouterLink
+        :to="{ name: 'cart' }"
+        :class="[$style['action'], $style['skip-link']]"
+      >
         <img
           :class="$style['action__icon']"
           :src="require(`@/assets/icon/shopping-cart_icon_blue.svg`)"
-          alt="Cart icon']"
+          alt="Cart icon"
         />
         <span :class="$style['action__text']">Cart</span>
-      </button>
+      </RouterLink>
+    </div>
+    <div v-if="isVisible" :class="$style['search__wrapper--expanded']">
+      <ul :class="$style['categories']">
+        <li
+          v-for="category in categories"
+          :key="category"
+          :class="[
+            $style['categories__item'],
+            {
+              [$style['categories__item--selected']]:
+                selectedCategory === category,
+            },
+          ]"
+          tabindex="0"
+          role="button"
+          @click="selectCategory(category)"
+        >
+          {{ category }}
+        </li>
+      </ul>
+      <div :class="$style['wrapper']">
+        <div v-if="isLoading" :class="$style['list__item--loading']">
+          Loading...
+        </div>
+        <div v-else-if="hasError" :class="$style['list__item--no-results']">
+          <span :class="$style['list__item--no-results__emoji']">\(-_-)/</span>
+          <span :class="$style['list__item--no-results__text']">
+            Something gone wrong. Could not download search results.
+          </span>
+        </div>
+        <div v-else-if="results.length > 0" :class="$style['list']">
+          <template v-for="item in results" :key="item.id">
+            <div :class="$style['list__item']">
+              <span :class="$style['list__item--miss-matched']">{{
+                highlightText(item.title, searchQuery).before
+              }}</span>
+              <span :class="$style['list__item--matched']">{{
+                highlightText(item.title, searchQuery).matched
+              }}</span>
+              <span :class="$style['list__item--miss-matched']">
+                {{ highlightText(item.title, searchQuery).remaining }}</span
+              >
+            </div>
+          </template>
+        </div>
+        <div
+          v-else-if="searchQuery.trim().length >= 3"
+          :class="$style['list__item--no-results']"
+        >
+          <span :class="$style['list__item--no-results__emoji']">\(o_o)/</span>
+          <span :class="$style['list__item--no-results__text']"
+            >no product found for '{{ searchQuery }}'</span
+          >
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -46,11 +176,29 @@ const showNavigation = ref(true);
 <style module lang="scss">
 .container {
   width: 100%;
-  background-color: #ffffff;
   border-bottom: 1px solid #878787;
-  height: 70px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+
+  &--expanded {
+    backdrop-filter: blur(1px);
+    background-color: #7f7f7f;
+  }
+}
+
+.search__wrapper--expanded {
+  top: 100%;
+  position: absolute;
+  width: 85%;
+  padding: 10px 20px;
+  min-height: 450px;
+  max-height: 900px;
+  background-color: #ffffff;
+  z-index: 2;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border: 1px solid #878787;
 }
 
 .header {
@@ -58,13 +206,21 @@ const showNavigation = ref(true);
   justify-content: center;
   align-items: center;
   gap: 10px;
-  max-width: 1420px;
-  width: 100%;
+  width: 85%;
+  z-index: 1;
+  padding: 10px 20px;
+  background-color: #ffffff;
 
   &__logo-container {
-    justify-content: start;
     display: flex;
     align-items: center;
+  }
+
+  &--expanded {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: 1px solid #878787;
+    border-bottom: none;
   }
 }
 
@@ -75,8 +231,6 @@ const showNavigation = ref(true);
   }
 
   &__title {
-    justify-content: center;
-    align-items: center;
     font-size: 2.5rem;
     font-family: "Jersey 25", sans-serif;
     font-style: normal;
@@ -88,7 +242,6 @@ const showNavigation = ref(true);
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 80%;
   border: none;
   border-left: 1px solid #878787;
   padding-left: 10px;
@@ -112,5 +265,116 @@ const showNavigation = ref(true);
   &:hover {
     color: #515151;
   }
+}
+.wrapper {
+  display: flex;
+}
+
+.categories {
+  display: flex;
+  flex-direction: column;
+  width: 15%;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  float: left;
+
+  &__item {
+    width: 100%;
+    min-height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    font-family: "Jersey 25", sans-serif;
+    font-style: normal;
+    border-radius: 10px;
+    padding: 0 20px;
+    color: #878787;
+    cursor: pointer;
+
+    &:not(&--selected):hover {
+      background: #dbf0fa;
+    }
+
+    &--selected {
+      background: #008ecc;
+      color: #ffffff;
+    }
+  }
+}
+
+.list {
+  width: 100%;
+  align-items: flex-start;
+  color: black;
+  font-size: 1rem;
+  font-family: "Jersey 25", sans-serif;
+  font-style: normal;
+
+  &__item {
+    display: block;
+    justify-content: flex-start;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.5rem;
+    border-radius: 20px;
+    padding: 5px 10px;
+    cursor: pointer;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+
+    &--matched {
+      color: black;
+    }
+
+    &--miss-matched {
+      color: #878787;
+    }
+
+    &--matched,
+    &--miss-matched {
+      white-space: pre;
+    }
+
+    &:hover {
+      background: #dbf0fa;
+    }
+
+    &--loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      font-size: 1.5rem;
+      width: 100%;
+    }
+
+    &--no-results {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      margin-top: 5%;
+      color: #878787;
+      font-family: "Jersey 25", sans-serif;
+      font-weight: 400;
+
+      &__emoji {
+        font-size: 8rem;
+      }
+
+      &__text {
+        font-size: 1.5rem;
+      }
+    }
+  }
+}
+
+.skip-link {
+  text-decoration: none;
 }
 </style>

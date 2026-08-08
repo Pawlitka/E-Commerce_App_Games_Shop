@@ -1,49 +1,30 @@
 <script setup>
-import { ref } from "vue";
-const showSearchBar = ref(true);
+import { ref, defineEmits, defineModel } from "vue";
 const focusSearchBar = ref(false);
-const searchHistory = ref([]);
+const emit = defineEmits(["focus", "debouncedSearch"]);
 
-function handleSearchBarFocus() {
-  if (searchHistory.value.length === 0) return;
-
-  focusSearchBar.value = true;
-}
-
-function handleSearchBarBlur() {
-  if (searchHistory.value.length === 0) return;
-
-  focusSearchBar.value = false;
-}
+const searchQuery = defineModel();
 </script>
 
 <template>
   <div :class="$style['container']">
-    <div
-      v-if="showSearchBar"
-      :class="[
-        $style['search-bar'],
-        { [$style['search-bar--open']]: focusSearchBar },
-      ]"
-    >
+    <div :class="[$style['search-bar']]">
       <input
-        :class="[
-          $style['search-bar__input'],
-          { [$style['search-bar__input--open']]: focusSearchBar },
-        ]"
+        v-model="searchQuery"
+        :class="$style['search-bar__input']"
         type="text"
         placeholder="Search for game you wish..."
-        @focus="handleSearchBarFocus"
-        @blur="handleSearchBarBlur"
+        @focus="emit('focus')"
       />
       <button
         type="button"
         :class="[
           $style['search-bar__icon-container'],
           {
-            [$style['search-bar__icon-container--open']]: focusSearchBar,
+            [$style['search-bar__icon-container']]: focusSearchBar,
           },
         ]"
+        @click="emit('close')"
       >
         <img
           :class="$style['search-bar__icon']"
@@ -52,18 +33,13 @@ function handleSearchBarBlur() {
         />
       </button>
     </div>
-    <div :class="$style['content']">
-      <Transition name="fade">
-        <div v-if="focusSearchBar" :class="$style['content__expanded']"></div>
-      </Transition>
-    </div>
   </div>
 </template>
 
 <style>
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s ease;
+  transition: opacity 0.1s ease;
   max-height: 230px;
 }
 
@@ -78,50 +54,28 @@ function handleSearchBarBlur() {
 $search-bar-radius: 20px;
 
 .container {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 100%;
+  align-items: center;
+  width: 85%;
   height: 100%;
-}
-
-.content {
-  position: relative;
-  width: 100%;
-  height: 0;
-}
-
-.content__expanded {
-  position: absolute;
-  top: 0;
-  left: 0;
-  min-height: 30vh;
-  max-height: 60vh;
-  width: 100%;
-  background-color: #ffffff;
-  border: 1px solid #878787;
-  z-index: -1;
-  border-bottom-left-radius: $search-bar-radius;
-  border-bottom-right-radius: $search-bar-radius;
 }
 
 .search-bar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
   min-width: 260px;
-  width: 100%;
+  width: 90%;
   height: 40px;
   background-color: #dbf0fa;
   border: #008ecc solid 1px;
   border-radius: $search-bar-radius;
 
-  &--open {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-
   &__input {
+    outline: none;
     border: none;
     width: 100%;
     height: 100%;
@@ -135,10 +89,6 @@ $search-bar-radius: 20px;
     padding-left: 20px;
     border-bottom-left-radius: $search-bar-radius;
     border-top-left-radius: $search-bar-radius;
-
-    &--results-shown {
-      border-bottom-left-radius: 0;
-    }
   }
 
   &__input::placeholder {
@@ -159,15 +109,6 @@ $search-bar-radius: 20px;
 
     &:hover {
       background-color: #2d94c1;
-    }
-
-    &__icon {
-      width: 1.5rem;
-      height: 1.5rem;
-    }
-
-    &--results-shown {
-      border-bottom-right-radius: 0;
     }
   }
 }
