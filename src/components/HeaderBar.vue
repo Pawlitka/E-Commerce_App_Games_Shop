@@ -3,16 +3,14 @@ import { defineEmits, defineProps, ref, watch } from "vue";
 import { onClickOutside, useDebounceFn } from "@vueuse/core";
 import { RouterLink } from "vue-router";
 import SearchBar from "@/components/SearchBar.vue";
-import { getGamesByTitleSearchBar } from "@/data/eCommerceAppGamesShopApi";
-import axios from "axios";
 
+import { useGameSearch } from "@/composables/useGameSearchByTitle";
+
+const NUMBER_OF_CHARS_TO_START_SEARCH = 3;
+const DEBOUNCE_TIME = 500;
 const showNavigation = ref(true);
 const searchContainerRef = ref(null);
-const results = ref([]);
-const isLoading = ref(false);
-const searchQuery = ref("");
 const categories = ["Trending", "By Genre", "By Name"];
-const hasError = ref(false);
 let currentController = null;
 
 const selectedCategory = ref(categories[0]);
@@ -20,58 +18,15 @@ const selectedCategory = ref(categories[0]);
 const selectCategory = (category) => {
   selectedCategory.value = category;
 };
-const handleSearch = async () => {
-  if (!searchQuery.value.trim()) {
-    hasError.value = false;
-    results.value = [];
-    return;
-  }
 
-  if (currentController) {
-    currentController.abort();
-  }
-
-  const controller = new AbortController();
-  currentController = controller;
-
-  results.value = [];
-  hasError.value = false;
-  isLoading.value = true;
-
-  try {
-    const response = await getGamesByTitleSearchBar.fetchGamesTitle(
-      searchQuery.value,
-      0,
-      10,
-      {
-        signal: controller.signal,
-      }
-    );
-
-    if (currentController === controller) {
-      results.value = response.games;
-    }
-  } catch (error) {
-    if (axios.isCancel(error) || error.name === "CanceledError") {
-      return;
-    }
-    console.error("Błąd podczas pobierania danych wyszukiwania: ", error);
-    if (currentController === controller) {
-      hasError.value = true;
-    }
-  } finally {
-    if (currentController === controller) {
-      isLoading.value = false;
-    }
-  }
-};
+const { searchQuery, results, isLoading, handleSearch } = useGameSearch();
 
 const debouncedSearch = useDebounceFn((query) => {
   handleSearch(query);
-}, 500);
+}, DEBOUNCE_TIME);
 watch(searchQuery, (newQuery) => {
   const trimmedQuery = newQuery.trim();
-  if (trimmedQuery.length >= 3) {
+  if (trimmedQuery.length >= NUMBER_OF_CHARS_TO_START_SEARCH) {
     isLoading.value = true;
     debouncedSearch(trimmedQuery);
   } else {
